@@ -457,12 +457,12 @@
       .radio-container {
         min-width: 100%;
       }
-      
+
       .linha {
         flex-direction: column;
         gap: 10px;
       }
-      
+
       .col {
         width: 100%;
       }
@@ -503,7 +503,7 @@
       <img src="img/logo.png" alt="Logo" onerror="this.style.display='none'">
       <div class="contato">Contato: 84 99809-6865</div>
     </div>
-    
+
     <h2 style="text-align:center;">ORDEM DE SERVIÇO</h2>
 
     <div class="linha initial-active" style="margin-bottom:15px;">
@@ -543,6 +543,8 @@
             <label for="tecnico">TÉCNICO</label>
             <select id="tecnico" required data-form-field="true">
               <option value="">Selecione</option>
+              <option>Bruno Santos</option>
+              <option>João Paulo</option>
                <option>Bruno Santos</option>
                <option>João Guilherme</option>
                <option>João Paulo</option>
@@ -573,14 +575,14 @@
               <label><input type="radio" name="liga" value="nao" required data-form-field="true"> Não</label>
             </div>
           </div>
-          
+
           <div class="radio-container" id="acessorioGroup"> <div class="radio-group">
               <span>ACESSÓRIO:</span>
               <label><input type="radio" name="acessorio" value="nao" checked data-form-field="true"> Não</label>
               <label><input type="radio" name="acessorio" value="sim" data-form-field="true"> Sim</label>
             </div>
           </div>
-          
+
           <div class="radio-container" id="defeitoGroup"> <div class="radio-group">
               <span>DEFEITO FÍSICO:</span>
               <label><input type="radio" name="defeito" value="nao" checked data-form-field="true"> Não</label>
@@ -588,13 +590,13 @@
             </div>
           </div>
         </div>
-        
+
         <div class="linha hidden" id="campoAcessorio"> <div class="col">
             <label for="qualAcessorio">QUAL ACESSÓRIO</label>
             <input type="text" id="qualAcessorio" data-form-field="true">
           </div>
         </div>
-        
+
         <div class="linha hidden" id="campoDefeito"> <div class="col">
             <label for="qualDefeito">QUAL DEFEITO</label>
             <input type="text" id="qualDefeito" data-form-field="true">
@@ -622,7 +624,7 @@
             <input type="number" id="garantiaDiasInput" min="0" placeholder="Deixe em branco para preencher manual" data-form-field="true">
           </div>
         </div>
-        
+
         <div class="termos-condicoes" id="termosFormulario"> <h3>Termos e Condições</h3>
           <ol>
             <li>
@@ -731,7 +733,7 @@
         if (value.length > 11) {
             value = value.substring(0, 11);
         }
-        
+
         if (value.length > 0) {
             if (value.length > 2) {
                 value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
@@ -751,7 +753,7 @@
 
         configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
         configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-        
+
         document.getElementById('nomeCliente').addEventListener('input', validarPassoAtual);
         document.getElementById('telefone').addEventListener('input', formatarTelefone);
         document.getElementById('tecnico').addEventListener('change', validarPassoAtual);
@@ -772,7 +774,7 @@
             garantiaServicoSpan.textContent = garantiaInput.value || "______";
             garantiaPecasSpan.textContent = garantiaInput.value || "______";
         });
-        
+
         document.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']").forEach(input => {
             input.setAttribute('data-form-field', 'true');
             input.addEventListener('keydown', handleEnterKey);
@@ -783,7 +785,7 @@
                 input.classList.remove('invalid-field');
             });
         });
-        
+
         document.querySelectorAll('.radio-group, .checkbox-group').forEach(group => {
             group.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(radioOrCheckbox => {
                 radioOrCheckbox.setAttribute('data-form-field', 'true');
@@ -852,7 +854,7 @@
 
       const inputsToValidate = Array.from(currentFormStepElement.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']"))
                                     .filter(input => input.offsetParent !== null && !input.closest('.hidden'));
-      
+
       inputsToValidate.forEach(input => {
           let fieldIsValid = true;
 
@@ -1017,13 +1019,13 @@
         iframe.style.left = '-9999px';
         iframe.style.top = '0';
         iframe.style.border = 'none';
-        
+
         document.body.appendChild(iframe);
 
         // Quando o iframe estiver carregado, adicionar o conteúdo
         iframe.onload = function() {
             const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            
+
             // Adicionar estilos
             const style = iframeDoc.createElement('style');
             style.innerHTML = `
@@ -1113,10 +1115,10 @@
 
             // Adicionar conteúdo
             const content = iframeDoc.createElement('div');
-            
+
             // Adicionar ambas as vias (loja e cliente)
             content.innerHTML = generatePrintContent(false) + generatePrintContent(true);
-            
+
             iframeDoc.body.appendChild(content);
 
             // Esperar um momento para garantir que tudo está carregado
@@ -1136,107 +1138,124 @@
         iframe.src = 'about:blank';
     }
 
-   function generatePrintContent(isClientCopy) {
-    const garantiaDias = document.getElementById('garantiaDiasInput').value || '______';
-    const temAcessorio = document.querySelector('input[name="acessorio"]:checked')?.value === 'sim';
-    const temDefeito = document.querySelector('input[name="defeito"]:checked')?.value === 'sim';
+    function generatePrintContent(isClientCopy) {
+        const garantiaDias = document.getElementById('garantiaDiasInput').value || '______';
+        const temAcessorio = document.querySelector('input[name="acessorio"]:checked')?.value === 'sim';
+        const temDefeito = document.querySelector('input[name="defeito"]:checked')?.value === 'sim';
 
-    return `
-    <div class="print-page">
-
-        <div class="print-header">
-            <img src="img/logo.png">
-            <div class="empresa-info">
-                <strong>CNT Assistência Técnica</strong><br>
-                Contato: 84 99809-6865
+        return `
+        <div class="print-page">
+            <div class="print-header">
+                <img src="img/logo.png" alt="Logo CNT Assistência Técnica">
+                <div>Contato: 84 99809-6865</div>
+            </div>
+            
+            <div class="print-title">${isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO'}</div>
+            
+            <div class="print-row-inline">
+                <div style="width: 30%;">
+                    <div class="print-label">OS Nº</div>
+                    <div class="print-value">${document.getElementById('osNumber').textContent}</div>
+                </div>
+                <div style="width: 30%;">
+                    <div class="print-label">DATA ENTRADA</div>
+                    <div class="print-value">${document.getElementById('dataEntrada').textContent}</div>
+                </div>
+                <div style="width: 30%;">
+                    <div class="print-label">DATA SAÍDA</div>
+                    <div class="print-value">${document.getElementById('dataSaida').textContent}</div>
+                </div>
+            </div>
+            
+            <div class="print-row">
+                <div class="print-label">CLIENTE</div>
+                <div class="print-value">${document.getElementById('nomeCliente').value}</div>
+            </div>
+            <div class="print-row">
+                <div class="print-label">TELEFONE</div>
+                <div class="print-value">${document.getElementById('telefone').value}</div>
+            </div>
+            <div class="print-row">
+                <div class="print-label">TÉCNICO</div>
+                <div class="print-value">${document.getElementById('tecnico').value}</div>
+            </div>
+            <div class="print-row">
+                <div class="print-label">EQUIPAMENTO</div>
+                <div class="print-value">${document.getElementById('equipamento').value}</div>
+            </div>
+            
+            ${temAcessorio ? `
+            <div class="print-row">
+                <div class="print-label">ACESSÓRIO</div>
+                <div class="print-value">Sim</div>
+            </div>
+            <div class="print-row">
+                <div class="print-label">QUAL ACESSÓRIO</div>
+                <div class="print-value">${document.getElementById('qualAcessorio').value}</div>
+            </div>
+            ` : ''}
+            
+            <div class="print-row">
+                <div class="print-label">LIGA</div>
+                <div class="print-value">${document.querySelector('input[name="liga"]:checked')?.value === 'sim' ? 'Sim' : 'Não'}</div>
+            </div>
+            
+            ${temDefeito ? `
+            <div class="print-row">
+                <div class="print-label">DEFEITO FÍSICO</div>
+                <div class="print-value">Sim</div>
+            </div>
+            <div class="print-row">
+                <div class="print-label">QUAL DEFEITO</div>
+                <div class="print-value">${document.getElementById('qualDefeito').value}</div>
+            </div>
+            ` : ''}
+            
+            <div class="print-row">
+                <div class="print-label">OBSERVAÇÕES</div>
+                <div class="print-value">${document.getElementById('observacoes').value}</div>
+            </div>
+            
+            <div class="print-row">
+                <div class="print-label">SERVIÇO REALIZADO</div>
+                <div class="print-value-large"></div>
+            </div>
+            
+            <div class="print-terms">
+                <h3 style="text-align:center; margin:0 0 10px 0; font-size:14px;">Termos e Condições</h3>
+                <ol style="margin:0; padding-left:20px;">
+                    <li><strong>Recebimento do Equipamento</strong><br>
+                        O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.
+                    </li>
+                    <li><strong>Diagnóstico e Orçamento</strong><br>
+                        O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.
+                    </li>
+                    <li><strong>Garantia</strong><br>
+                        Garantia de ${garantiaDias} dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.
+                    </li>
+                    <li><strong>Equipamentos Não Retirados</strong><br>
+                        Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.
+                    </li>
+                    <li><strong>Perda de Dados</strong><br>
+                        Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.
+                    </li>
+                    <li><strong>Peças Substituídas</strong><br>
+                        Garantia de ${garantiaDias} dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.
+                    </li>
+                </ol>
+            </div>
+            
+            <div class="print-signatures">
+                <div class="print-signature">
+                    <div class="signature-line"></div>
+                    <div>ASS. CLIENTE / ENTREGA</div>
+                </div>
+                <div class="print-signature">
+                    <div class="signature-line"></div>
+                    <div>ASS. CLIENTE / RETIRADA</div>
+                </div>
             </div>
         </div>
-
-        <div class="print-title">
-            ${isClientCopy ? 'VIA DO CLIENTE' : 'ORDEM DE SERVIÇO'}
-        </div>
-
-        <div class="print-row-inline">
-            <div style="width: 32%;">
-                <div class="print-label">OS Nº</div>
-                <div class="print-value">${document.getElementById('osNumber').textContent}</div>
-            </div>
-            <div style="width: 32%;">
-                <div class="print-label">ENTRADA</div>
-                <div class="print-value">${document.getElementById('dataEntrada').textContent}</div>
-            </div>
-            <div style="width: 32%;">
-                <div class="print-label">SAÍDA</div>
-                <div class="print-value">${document.getElementById('dataSaida').textContent}</div>
-            </div>
-        </div>
-
-        <div class="print-row">
-            <div class="print-label">CLIENTE</div>
-            <div class="print-value">${document.getElementById('nomeCliente').value}</div>
-        </div>
-
-        <div class="print-row">
-            <div class="print-label">TELEFONE</div>
-            <div class="print-value">${document.getElementById('telefone').value}</div>
-        </div>
-
-        <div class="print-row">
-            <div class="print-label">TÉCNICO</div>
-            <div class="print-value">${document.getElementById('tecnico').value}</div>
-        </div>
-
-        <div class="print-row">
-            <div class="print-label">EQUIPAMENTO</div>
-            <div class="print-value">${document.getElementById('equipamento').value}</div>
-        </div>
-
-        ${temAcessorio ? `
-        <div class="print-row">
-            <div class="print-label">ACESSÓRIO</div>
-            <div class="print-value">${document.getElementById('qualAcessorio').value}</div>
-        </div>` : ''}
-
-        <div class="print-row">
-            <div class="print-label">LIGA</div>
-            <div class="print-value">${document.querySelector('input[name="liga"]:checked')?.value === 'sim' ? 'Sim' : 'Não'}</div>
-        </div>
-
-        ${temDefeito ? `
-        <div class="print-row">
-            <div class="print-label">DEFEITO</div>
-            <div class="print-value">${document.getElementById('qualDefeito').value}</div>
-        </div>` : ''}
-
-        <div class="print-row">
-            <div class="print-label">OBSERVAÇÕES</div>
-            <div class="print-value">${document.getElementById('observacoes').value}</div>
-        </div>
-
-        <div class="print-row">
-            <div class="print-label">SERVIÇO</div>
-            <div class="print-value-large"></div>
-        </div>
-
-        <div class="print-terms">
-            Garantia de ${garantiaDias} dias para o serviço realizado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.
-        </div>
-
-        <div class="print-signatures">
-            <div class="print-signature">
-                <div class="signature-line"></div>
-                ASS. CLIENTE / ENTREGA
-            </div>
-
-            <div class="print-signature">
-                <div class="signature-line"></div>
-                ASS. CLIENTE / RETIRADA
-            </div>
-        </div>
-
-    </div>
-    `;
-}
         `;
     }
 
