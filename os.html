@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OS - CNT Assistência</title>
+  <link rel="preload" as="image" href="img/logo.png">
   <style>
     /* ===== VARIÁVEIS ===== */
     :root {
@@ -490,7 +491,7 @@
     }
   </style>
 </head>
-<body onload="inicializarOS()">
+<body>
   <div class="barra-progresso">
     <div id="barra" class="progresso"></div>
   </div>
@@ -525,6 +526,21 @@
       <div class="input-area">
         <div class="linha">
           <div class="col">
+            <label for="modeloOS">MODELO DA OS</label>
+            <select id="modeloOS" required data-form-field="true">
+              <option value="">Selecione</option>
+              <option value="celular">OS para Celular</option>
+              <option value="computador">OS para Computadores e Notebooks</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-step" data-step="2">
+      <div class="input-area">
+        <div class="linha">
+          <div class="col">
             <label for="nomeCliente">NOME DO CLIENTE</label>
             <input type="text" id="nomeCliente" required minlength="3" data-form-field="true">
           </div>
@@ -532,7 +548,7 @@
       </div>
     </div>
 
-    <div class="form-step" data-step="2">
+    <div class="form-step" data-step="3">
       <div class="input-area">
         <div class="linha">
           <div class="col">
@@ -543,22 +559,10 @@
             <label for="tecnico">TÉCNICO</label>
             <select id="tecnico" required data-form-field="true">
               <option value="">Selecione</option>
-               <option>Bruno Santos</option>
-               <option>João Guilherme</option>
-               <option>João Paulo</option>
-               <option>Joaquim Sobral</option>
+              <option>Bruno Santos</option>
+              <option>João Paulo</option>
+              <option>Joaquim Sobral</option>
             </select>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-step" data-step="3">
-      <div class="input-area">
-        <div class="linha">
-          <div class="col">
-            <label for="equipamento">EQUIPAMENTO</label>
-            <input type="text" id="equipamento" required data-form-field="true">
           </div>
         </div>
       </div>
@@ -567,35 +571,68 @@
     <div class="form-step" data-step="4">
       <div class="input-area">
         <div class="linha">
-          <div class="radio-container" id="ligaGroup"> <div class="radio-group">
+          <div class="col">
+            <label for="equipamento">EQUIPAMENTO</label>
+            <input type="text" id="equipamento" required data-form-field="true">
+          </div>
+        </div>
+        <div id="senhaCelularArea" class="hidden">
+          <div class="linha">
+            <div class="col">
+              <label for="senhaEscrita">SENHA ESCRITA</label>
+              <input type="text" id="senhaEscrita" placeholder="Ex.: 1234, 0000 ou nenhuma" data-form-field="true">
+            </div>
+            <div class="col" id="senhaPadraoArea">
+              <label>SENHA PADRÃO</label>
+              <div id="padraoGrid" style="border:1px solid var(--border-color); border-radius:4px; background-color:var(--bg-secondary); padding:14px; display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; max-width:230px; margin:0 auto; box-sizing:border-box;">
+                <button type="button" data-dot="1" aria-label="Ponto 1" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="2" aria-label="Ponto 2" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="3" aria-label="Ponto 3" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="4" aria-label="Ponto 4" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="5" aria-label="Ponto 5" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="6" aria-label="Ponto 6" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="7" aria-label="Ponto 7" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="8" aria-label="Ponto 8" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+                <button type="button" data-dot="9" aria-label="Ponto 9" style="height:28px; border:none; background:transparent; color:var(--text-light); font-size:26px; line-height:1; cursor:pointer;">•</button>
+              </div>
+              <div style="text-align:center; margin-top:6px; font-size:13px; color:var(--readonly-text);">
+                Padrão: <span id="senhaPadraoTexto">______</span>
+                <button type="button" id="limparPadrao" style="margin-left:8px; background:var(--accent-color); color:var(--text-light); border:1px solid var(--border-color); border-radius:4px; padding:3px 8px; cursor:pointer;">Limpar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-step" data-step="5">
+      <div class="input-area">
+        <div class="linha">
+          <div class="radio-container" id="ligaGroup"><div class="radio-group">
               <span>LIGA:</span>
               <label><input type="radio" name="liga" value="sim" required data-form-field="true"> Sim</label>
               <label><input type="radio" name="liga" value="nao" required data-form-field="true"> Não</label>
             </div>
           </div>
-
-          <div class="radio-container" id="acessorioGroup"> <div class="radio-group">
+          <div class="radio-container" id="acessorioGroup"><div class="radio-group">
               <span>ACESSÓRIO:</span>
               <label><input type="radio" name="acessorio" value="nao" checked data-form-field="true"> Não</label>
               <label><input type="radio" name="acessorio" value="sim" data-form-field="true"> Sim</label>
             </div>
           </div>
-
-          <div class="radio-container" id="defeitoGroup"> <div class="radio-group">
+          <div class="radio-container" id="defeitoGroup"><div class="radio-group">
               <span>DEFEITO FÍSICO:</span>
               <label><input type="radio" name="defeito" value="nao" checked data-form-field="true"> Não</label>
               <label><input type="radio" name="defeito" value="sim" data-form-field="true"> Sim</label>
             </div>
           </div>
         </div>
-
-        <div class="linha hidden" id="campoAcessorio"> <div class="col">
+        <div class="linha hidden" id="campoAcessorio"><div class="col">
             <label for="qualAcessorio">QUAL ACESSÓRIO</label>
             <input type="text" id="qualAcessorio" data-form-field="true">
           </div>
         </div>
-
-        <div class="linha hidden" id="campoDefeito"> <div class="col">
+        <div class="linha hidden" id="campoDefeito"><div class="col">
             <label for="qualDefeito">QUAL DEFEITO</label>
             <input type="text" id="qualDefeito" data-form-field="true">
           </div>
@@ -603,7 +640,7 @@
       </div>
     </div>
 
-    <div class="form-step" data-step="5">
+    <div class="form-step" data-step="6">
       <div class="input-area">
         <div class="linha">
           <div class="col">
@@ -614,7 +651,7 @@
       </div>
     </div>
 
-    <div class="form-step" data-step="6">
+    <div class="form-step" data-step="7">
       <div class="input-area">
         <div class="linha">
           <div class="col">
@@ -622,504 +659,400 @@
             <input type="number" id="garantiaDiasInput" min="0" placeholder="Deixe em branco para preencher manual" data-form-field="true">
           </div>
         </div>
-
-        <div class="termos-condicoes" id="termosFormulario"> <h3>Termos e Condições</h3>
+        <div class="termos-condicoes" id="termosFormulario"><h3>Termos e Condições</h3>
           <ol>
-            <li>
-              <strong>Recebimento do Equipamento</strong>
-              <p>o O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.</p>
-            </li>
-            <li>
-              <strong>Diagnóstico e Orçamento</strong>
-              <p>o O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.</p>
-            </li>
-            <li>
-              <strong>Garantia</strong>
-              <p>o Garantia de <span class="garantia-dias-span" id="garantiaServico">______</span> dias para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.</p>
-            </li>
-            <li>
-              <strong>Equipamentos Não Retirados</strong>
-              <p>o Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$ 1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Artigo 1.275, inciso III.</p>
-            </li>
-            <li>
-              <strong>Perda de Dados</strong>
-              <p>o Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.</p>
-            </li>
-            <li>
-              <strong>Peças Substituídas</strong>
-              <p>o Garantia de <span class="garantia-dias-span" id="garantiaPecas">______</span> dias para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.</p>
-            </li>
+            <li><strong>Recebimento do Equipamento</strong><p>O equipamento entregue será avaliado conforme as informações declaradas pelo cliente, incluindo estado físico, avarias aparentes e acessórios recebidos. Não nos responsabilizamos por itens não declarados no ato da entrada.</p></li>
+            <li><strong>Diagnóstico e Orçamento</strong><p>O diagnóstico será realizado em até 3 dias úteis, podendo variar conforme a complexidade do defeito. O serviço somente será iniciado após aprovação do orçamento pelo cliente.</p></li>
+            <li><strong>Garantia</strong><p>Garantia de <span class="garantia-dias-span" id="garantiaServico">______</span> dias para o serviço realizado, limitada exclusivamente ao reparo efetuado. Não cobre mau uso, quedas, contato com líquidos, oxidação, violação, reinstalação de sistema por terceiros ou defeitos diferentes do serviço executado.</p></li>
+            <li><strong>Equipamentos Não Retirados</strong><p>Após 30 dias da conclusão ou comunicação para retirada, poderá ser cobrada taxa de armazenamento de R$ 1,00 por dia. Após 90 dias, o equipamento poderá ser considerado abandonado, conforme o Código Civil, Art. 1.275, inciso III.</p></li>
+            <li><strong>Dados, Arquivos e Backups</strong><p>A assistência não se responsabiliza por perda, alteração, corrompimento ou ausência de dados, arquivos, fotos, aplicativos, senhas ou backups. A responsabilidade pelo backup prévio é do cliente. Quando solicitado, o serviço de backup será cobrado à parte e dependerá das condições do equipamento e da mídia de armazenamento.</p></li>
+            <li><strong>Peças Substituídas</strong><p>Garantia de <span class="garantia-dias-span" id="garantiaPecas">______</span> dias para peças substituídas contra defeitos de fabricação, quando aplicável. Peças originais somente mediante solicitação e disponibilidade.</p></li>
           </ol>
         </div>
       </div>
     </div>
 
     <div id="printContainer" style="display: none;"></div>
-
     <button id="mainActionButton" class="fixed-action-button" onclick="handleActionButtonClick()">Próximo →</button>
   </div>
 
   <script>
     let currentStep = 1;
-    const totalSteps = 6;
-    let formInputs = [];
+    const totalSteps = 7;
+    let senhaPadrao = [];
 
-    function collectOSData() {
-        return {
-            osNumber: document.getElementById('osNumber').textContent,
-            dataEntrada: document.getElementById('dataEntrada').textContent,
-            dataSaida: document.getElementById('dataSaida').textContent,
-            nomeCliente: document.getElementById('nomeCliente').value,
-            telefone: document.getElementById('telefone').value,
-            tecnico: document.getElementById('tecnico').value,
-            equipamento: document.getElementById('equipamento').value,
-            acessorioSim: document.querySelector('input[name="acessorio"][value="sim"]:checked') ? true : false,
-            qualAcessorio: document.getElementById('qualAcessorio').value,
-            ligaSim: document.querySelector('input[name="liga"][value="sim"]:checked') ? true : false,
-            defeitoFisicoSim: document.querySelector('input[name="defeito"][value="sim"]:checked') ? true : false,
-            qualDefeito: document.getElementById('qualDefeito').value,
-            garantiaDias: document.getElementById('garantiaDiasInput').value || null,
-            observacoes: document.getElementById('observacoes').value,
-            timestamp: new Date().getTime()
-        };
-    }
+    document.addEventListener('DOMContentLoaded', inicializarOS);
 
-    function saveOSData(osData) {
-        let history = JSON.parse(localStorage.getItem('os_history') || '[]');
-        const existingIndex = history.findIndex(item => item.osNumber === osData.osNumber);
-        if (existingIndex > -1) {
-            history[existingIndex] = osData;
-        } else {
-            history.push(osData);
-        }
-        localStorage.setItem('os_history', JSON.stringify(history));
+    function inicializarOS() {
+      currentStep = 1;
+      document.getElementById('osNumber').textContent = generateOSNumber();
+      document.getElementById('dataEntrada').textContent = new Date().toLocaleDateString('pt-BR');
+      document.getElementById('dataSaida').textContent = '';
+
+      configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
+      configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
+      configurarSenhaPadrao();
+
+      document.querySelectorAll('[data-form-field="true"]').forEach(campo => {
+        campo.addEventListener('keydown', handleEnterKey);
+        campo.addEventListener('input', () => {
+          campo.classList.remove('invalid-field');
+          if (campo.id === 'telefone') formatarTelefone({ target: campo });
+          if (campo.id === 'modeloOS') {
+            alternarModeloOS();
+            iniciarOSAoSelecionarModelo();
+          }
+          validarPassoAtual(false);
+        });
+        campo.addEventListener('change', () => {
+          campo.classList.remove('invalid-field');
+          if (campo.id === 'modeloOS') {
+            alternarModeloOS();
+            iniciarOSAoSelecionarModelo();
+          }
+          validarPassoAtual(false);
+        });
+      });
+
+      document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', () => validarPassoAtual(false));
+      });
+
+      const garantiaInput = document.getElementById('garantiaDiasInput');
+      garantiaInput.addEventListener('input', () => {
+        document.getElementById('garantiaServico').textContent = garantiaInput.value || '______';
+        document.getElementById('garantiaPecas').textContent = garantiaInput.value || '______';
+      });
+
+      showStep(currentStep);
     }
 
     function generateOSNumber() {
-        const today = new Date();
-        const datePart = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
-        let counter = parseInt(localStorage.getItem(`osCount_${datePart}`) || '0');
-        if (counter >= 99) counter = 0;
-        counter++;
-        localStorage.setItem(`osCount_${datePart}`, counter.toString());
-        return `${today.getFullYear()} ${datePart.slice(4, 6)}${datePart.slice(6, 8)} ${counter.toString().padStart(2, '0')}`;
+      const today = new Date();
+      const datePart = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
+      let counter = parseInt(localStorage.getItem(`osCount_${datePart}`) || '0', 10);
+      if (counter >= 99) counter = 0;
+      counter++;
+      localStorage.setItem(`osCount_${datePart}`, counter.toString());
+      return `${today.getFullYear()} ${datePart.slice(4, 6)}${datePart.slice(6, 8)} ${counter.toString().padStart(2, '0')}`;
+    }
+
+    function atualizarProgresso() {
+      const barra = document.getElementById('barra');
+      if (barra) barra.style.height = `${(currentStep / totalSteps) * 100}%`;
     }
 
     function configurarRadios(nomeGrupo, idCampoContainer, idInputAssociado) {
-      const campoContainer = document.getElementById(idCampoContainer);
-      const inputAssociado = document.getElementById(idInputAssociado);
-
       document.querySelectorAll(`input[name="${nomeGrupo}"]`).forEach(radio => {
         radio.addEventListener('change', () => {
+          const campoContainer = document.getElementById(idCampoContainer);
+          const inputAssociado = document.getElementById(idInputAssociado);
           if (campoContainer && inputAssociado) {
-            if (radio.value === 'sim') {
+            if (radio.value === 'sim' && radio.checked) {
               campoContainer.classList.remove('hidden');
-            } else {
+            } else if (radio.value === 'nao' && radio.checked) {
               campoContainer.classList.add('hidden');
               inputAssociado.value = '';
             }
           }
-          validarPassoAtual();
+          validarPassoAtual(false);
         });
       });
+    }
+
+    function configurarSenhaPadrao() {
+      document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => {
+        botao.addEventListener('click', () => {
+          const dot = botao.dataset.dot;
+          if (!senhaPadrao.includes(dot)) {
+            senhaPadrao.push(dot);
+            botao.style.opacity = '0.45';
+          }
+          atualizarSenhaPadraoTexto();
+        });
+      });
+      document.getElementById('limparPadrao').addEventListener('click', limparSenhaPadrao);
+    }
+
+    function atualizarSenhaPadraoTexto() {
+      document.getElementById('senhaPadraoTexto').textContent = senhaPadrao.length ? senhaPadrao.join(' - ') : '______';
+    }
+
+    function limparSenhaPadrao() {
+      senhaPadrao = [];
+      document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => botao.style.opacity = '1');
+      atualizarSenhaPadraoTexto();
+    }
+
+    function alternarModeloOS() {
+      const modelo = document.getElementById('modeloOS').value;
+      const areaSenha = document.getElementById('senhaCelularArea');
+      const areaPadrao = document.getElementById('senhaPadraoArea');
+
+      if (modelo === 'celular' || modelo === 'computador') {
+        areaSenha.classList.remove('hidden');
+      } else {
+        areaSenha.classList.add('hidden');
+        document.getElementById('senhaEscrita').value = '';
+      }
+
+      if (modelo === 'celular') {
+        areaPadrao.classList.remove('hidden');
+      } else {
+        areaPadrao.classList.add('hidden');
+        limparSenhaPadrao();
+      }
+    }
+
+    function iniciarOSAoSelecionarModelo() {
+      const modelo = document.getElementById('modeloOS').value;
+      if (!modelo) return;
+
+      if (currentStep < 2) {
+        showStep(2);
+      }
+
+      setTimeout(() => {
+        const nomeCliente = document.getElementById('nomeCliente');
+        if (nomeCliente) nomeCliente.focus();
+      }, 50);
     }
 
     function formatarTelefone(event) {
-        let input = event.target;
-        let value = input.value.replace(/\D/g, '');
-
-        if (value.length > 11) {
-            value = value.substring(0, 11);
-        }
-
-        if (value.length > 0) {
-            if (value.length > 2) {
-                value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
-            }
-            if (value.length > 9) {
-                value = value.replace(/(\d{5})(\d)/, '$1-$2');
-            }
-        }
-        input.value = value;
-        validarPassoAtual();
-    }
-
-    function inicializarOS() {
-        document.getElementById('osNumber').textContent = generateOSNumber();
-        document.getElementById('dataEntrada').textContent = new Date().toLocaleDateString('pt-BR');
-        document.getElementById('dataSaida').textContent = '';
-
-        configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
-        configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
-
-        document.getElementById('nomeCliente').addEventListener('input', validarPassoAtual);
-        document.getElementById('telefone').addEventListener('input', formatarTelefone);
-        document.getElementById('tecnico').addEventListener('change', validarPassoAtual);
-        document.getElementById('equipamento').addEventListener('input', validarPassoAtual);
-        document.getElementById('observacoes').addEventListener('input', validarPassoAtual);
-
-        document.querySelectorAll('input[name="liga"]').forEach(radio => {
-            radio.addEventListener('change', validarPassoAtual);
-        });
-
-        document.getElementById('qualAcessorio').addEventListener('input', validarPassoAtual);
-        document.getElementById('qualDefeito').addEventListener('input', validarPassoAtual);
-
-        const garantiaInput = document.getElementById('garantiaDiasInput');
-        const garantiaServicoSpan = document.getElementById('garantiaServico');
-        const garantiaPecasSpan = document.getElementById('garantiaPecas');
-        garantiaInput.addEventListener('input', () => {
-            garantiaServicoSpan.textContent = garantiaInput.value || "______";
-            garantiaPecasSpan.textContent = garantiaInput.value || "______";
-        });
-
-        document.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']").forEach(input => {
-            input.setAttribute('data-form-field', 'true');
-            input.addEventListener('keydown', handleEnterKey);
-            input.addEventListener('input', () => {
-                input.classList.remove('invalid-field');
-            });
-            input.addEventListener('change', () => {
-                input.classList.remove('invalid-field');
-            });
-        });
-
-        document.querySelectorAll('.radio-group, .checkbox-group').forEach(group => {
-            group.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(radioOrCheckbox => {
-                radioOrCheckbox.setAttribute('data-form-field', 'true');
-                radioOrCheckbox.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        if (validarPassoAtual()) {
-                            focusNextInputInStep(event.target);
-                        }
-                    }
-                });
-                radioOrCheckbox.addEventListener('change', () => {
-                    const radioName = radioOrCheckbox.name;
-                    const radiosInGroup = document.querySelectorAll(`input[name="${radioName}"]`);
-                    if (Array.from(radiosInGroup).some(radio => radio.checked)) {
-                        radiosInGroup.forEach(radio => radio.classList.remove('invalid-field'));
-                    }
-                });
-            });
-        });
-        showStep(currentStep);
-        atualizarProgresso();
+      let input = event.target;
+      let value = input.value.replace(/\D/g, '').substring(0, 11);
+      if (value.length > 2) value = value.replace(/^(\d{2})(\d)/, '($1) $2');
+      if (value.length > 10) value = value.replace(/(\d{5})(\d)/, '$1-$2');
+      input.value = value;
     }
 
     function handleEnterKey(event) {
-        if (event.target.tagName === 'TEXTAREA') {
-            return;
-        }
-
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            if (validarPassoAtual()) {
-                focusNextInputInStep(event.target);
-            } else {
-                alert("Verifique os Campos em Vermelho");
-            }
-        }
-    }
-
-    function focusNextInputInStep(currentInput) {
-        const allVisibleInputs = Array.from(document.querySelectorAll("[data-form-field='true']"))
-                                    .filter(input => {
-                                        return input.offsetParent !== null && !input.closest('.hidden') && !input.readOnly;
-                                    });
-        const currentInputIndex = allVisibleInputs.indexOf(currentInput);
-
-        if (currentInputIndex > -1 && currentInputIndex < allVisibleInputs.length - 1) {
-            allVisibleInputs[currentInputIndex + 1].focus();
-        } else {
-            if (validarPassoAtual()) {
-                nextStep();
-            }
-        }
-    }
-
-    function validarPassoAtual() {
-      const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
-      let isValid = true;
-      let hasInvalidFields = false;
-
-      if (!currentFormStepElement) return true;
-
-      currentFormStepElement.querySelectorAll("input, select, textarea").forEach(input => {
-          input.classList.remove('invalid-field');
-      });
-
-      const inputsToValidate = Array.from(currentFormStepElement.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']"))
-                                    .filter(input => input.offsetParent !== null && !input.closest('.hidden'));
-
-      inputsToValidate.forEach(input => {
-          let fieldIsValid = true;
-
-          if (input.id === 'nomeCliente') {
-              if (input.value.trim().length < 3) {
-                  fieldIsValid = false;
-              }
-          } else if (input.id === 'telefone') {
-              const cleanedValue = input.value.replace(/\D/g, '');
-              if (cleanedValue.length !== 11) {
-                  fieldIsValid = false;
-              }
-          } else if (input.id === 'tecnico') {
-              if (input.value === '') {
-                  fieldIsValid = false;
-              }
-          } else if (input.id === 'qualAcessorio') {
-              const acessorioSimChecked = document.querySelector('input[name="acessorio"][value="sim"]:checked');
-              if (acessorioSimChecked && input.value.trim().length < 5) {
-                  fieldIsValid = false;
-              }
-          } else if (input.id === 'qualDefeito') {
-              const defeitoSimChecked = document.querySelector('input[name="defeito"][value="sim"]:checked');
-              if (defeitoSimChecked && input.value.trim().length < 5) {
-                  fieldIsValid = false;
-              }
-          } else if (input.required && input.value.trim() === '') {
-              fieldIsValid = false;
-          }
-
-          if (!fieldIsValid) {
-              input.classList.add('invalid-field');
-              isValid = false;
-              hasInvalidFields = true;
-          }
-      });
-
-      currentFormStepElement.querySelectorAll('.radio-group, .checkbox-group').forEach(group => {
-          if (group.offsetParent !== null && !group.closest('.hidden')) {
-              const radioName = group.querySelector('input[type="radio"]')?.name;
-              if (radioName) {
-                  const radiosInGroup = document.querySelectorAll(`input[name="${radioName}"]`);
-                  const isAnyRadioChecked = Array.from(radiosInGroup).some(radio => radio.checked);
-                  const isRequiredGroup = Array.from(radiosInGroup).some(radio => radio.required);
-
-                  if (isRequiredGroup && !isAnyRadioChecked) {
-                      radiosInGroup.forEach(radio => radio.classList.add('invalid-field'));
-                      isValid = false;
-                      hasInvalidFields = true;
-                  } else {
-                      radiosInGroup.forEach(radio => radio.classList.remove('invalid-field'));
-                  }
-              }
-          }
-      });
-
-      const mainActionButton = document.getElementById('mainActionButton');
-      if (mainActionButton) {
-          let ligaSelected = true;
-          if (currentStep === 4) {
-             const ligaRadios = document.querySelectorAll('input[name="liga"]');
-             ligaSelected = Array.from(ligaRadios).some(radio => radio.checked);
-          }
-          mainActionButton.disabled = hasInvalidFields || !ligaSelected;
-      }
-
-      return isValid;
-    }
-
-    function showStep(step) {
-      document.querySelectorAll('.form-step').forEach(s => {
-        const stepNum = parseInt(s.dataset.step);
-        s.classList.toggle('visible-step', stepNum <= step);
-      });
-      const mainActionButton = document.getElementById('mainActionButton');
-      if (mainActionButton) {
-          mainActionButton.textContent = (step === totalSteps) ? 'Salvar e Imprimir' : 'Próximo →';
-      }
-      validarPassoAtual();
-      atualizarProgresso();
-      const currentFormStepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
-      if (currentFormStepElement) {
-          const firstInput = currentFormStepElement.querySelector("input:not([type='radio']):not([type='checkbox']):not(.hidden):not([readonly]), select:not(.hidden):not([readonly]), textarea:not(.hidden):not([readonly]), input[type='number']:not(.hidden):not([readonly])");
-          if (firstInput) {
-              firstInput.focus();
-          } else {
-              const firstRadioOrCheckbox = currentFormStepElement.querySelector("input[type='radio']:not(.hidden), input[type='checkbox']:not(.hidden)");
-              if (firstRadioOrCheckbox) {
-                  firstRadioOrCheckbox.focus();
-              }
-          }
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      if (validarPassoAtual(true)) {
+        focusNextInput(event.target);
       }
     }
 
-    function handleActionButtonClick() {
-        if (validarPassoAtual()) {
-            if (currentStep === totalSteps) {
-                salvarImprimir();
-            } else {
-                nextStep();
-            }
-        } else {
-            alert("Verifique os Campos em Vermelho");
-        }
-    }
-
-    function nextStep() {
-      if (validarPassosAnteriores() && validarPassoAtual()) {
-        currentStep = Math.min(currentStep + 1, totalSteps);
-        showStep(currentStep);
+    function focusNextInput(currentInput) {
+      const campos = getVisibleFields();
+      const index = campos.indexOf(currentInput);
+      if (index >= 0 && index < campos.length - 1) {
+        campos[index + 1].focus();
       } else {
-        alert("Verifique os Campos em Vermelho");
+        nextStep();
       }
+    }
+
+    function getVisibleFields() {
+      return Array.from(document.querySelectorAll('[data-form-field="true"]')).filter(campo => {
+        return campo.offsetParent !== null && !campo.closest('.hidden') && !campo.disabled && !campo.readOnly;
+      });
+    }
+
+    function validarPassoAtual(mostrarAlerta) {
+      const stepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+      if (!stepElement) return true;
+      let valido = true;
+      stepElement.querySelectorAll('input, select, textarea').forEach(campo => campo.classList.remove('invalid-field'));
+
+      const campos = Array.from(stepElement.querySelectorAll('input:not([type="radio"]), select, textarea')).filter(campo => {
+        return campo.offsetParent !== null && !campo.closest('.hidden') && !campo.disabled && !campo.readOnly;
+      });
+
+      campos.forEach(campo => {
+        let ok = true;
+        if (campo.id === 'nomeCliente') ok = campo.value.trim().length >= 3;
+        else if (campo.id === 'telefone') ok = campo.value.replace(/\D/g, '').length === 11;
+        else if (campo.id === 'modeloOS') ok = campo.value !== '';
+        else if (campo.id === 'tecnico') ok = campo.value !== '';
+        else if (campo.id === 'qualAcessorio') ok = !document.querySelector('input[name="acessorio"][value="sim"]:checked') || campo.value.trim().length >= 3;
+        else if (campo.id === 'qualDefeito') ok = !document.querySelector('input[name="defeito"][value="sim"]:checked') || campo.value.trim().length >= 3;
+        else if (campo.required) ok = campo.value.trim() !== '';
+        if (!ok) {
+          campo.classList.add('invalid-field');
+          valido = false;
+        }
+      });
+
+      stepElement.querySelectorAll('.radio-group').forEach(group => {
+        if (group.offsetParent !== null && !group.closest('.hidden')) {
+          const radio = group.querySelector('input[type="radio"]');
+          if (!radio) return;
+          const radios = Array.from(document.querySelectorAll(`input[name="${radio.name}"]`));
+          const required = radios.some(r => r.required);
+          const checked = radios.some(r => r.checked);
+          if (required && !checked) {
+            radios.forEach(r => r.classList.add('invalid-field'));
+            valido = false;
+          }
+        }
+      });
+
+      const botao = document.getElementById('mainActionButton');
+      if (botao) botao.disabled = !valido;
+      if (!valido && mostrarAlerta) alert('Verifique os Campos em Vermelho');
+      return valido;
     }
 
     function validarPassosAnteriores() {
-        let allPreviousStepsValid = true;
-        for (let i = 1; i < currentStep; i++) {
-            const stepElement = document.querySelector(`.form-step[data-step="${i}"]`);
-            if (stepElement) {
-                stepElement.querySelectorAll("input:not([type='radio']):not([type='checkbox']), select, textarea, input[type='number']").forEach(input => {
-                    if (input.required && input.value.trim() === '') {
-                        allPreviousStepsValid = false;
-                        input.classList.add('invalid-field');
-                    } else {
-                        input.classList.remove('invalid-field');
-                    }
-                });
-                stepElement.querySelectorAll('.radio-group, .checkbox-group').forEach(group => {
-                    const radioName = group.querySelector('input[type="radio"]')?.name;
-                    if (radioName) {
-                        const radiosInGroup = document.querySelectorAll(`input[name="${radioName}"]`);
-                        const isAnyRadioChecked = Array.from(radiosInGroup).some(radio => radio.checked);
-                        const isRequiredGroup = Array.from(radiosInGroup).some(radio => radio.required);
-                        if (isRequiredGroup && !isAnyRadioChecked) {
-                            allPreviousStepsValid = false;
-                            radiosInGroup.forEach(radio => radio.classList.add('invalid-field'));
-                        } else {
-                            radiosInGroup.forEach(radio => radio.classList.remove('invalid-field'));
-                        }
-                    }
-                });
-            }
+      const etapaAtual = currentStep;
+      for (let i = 1; i < etapaAtual; i++) {
+        currentStep = i;
+        if (!validarPassoAtual(false)) {
+          currentStep = etapaAtual;
+          showStep(i);
+          return false;
         }
-        return allPreviousStepsValid;
+      }
+      currentStep = etapaAtual;
+      return true;
     }
 
- function salvarImprimir() {
-    if (!validarPassoAtual()) {
-        alert("Verifique os Campos em Vermelho antes de imprimir.");
-        return;
+    function showStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.form-step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step, 10);
+        s.classList.toggle('visible-step', stepNum <= currentStep);
+      });
+      const botao = document.getElementById('mainActionButton');
+      botao.textContent = currentStep === totalSteps ? 'Salvar e Imprimir' : 'Próximo →';
+      atualizarProgresso();
+      validarPassoAtual(false);
+      const campo = document.querySelector(`.form-step[data-step="${currentStep}"] [data-form-field="true"]:not([type="radio"])`);
+      if (campo && campo.offsetParent !== null) campo.focus();
     }
 
-    const osData = collectOSData();
-    const getCampo = (valor, padrao = '______') => valor && valor.trim() !== '' ? valor : padrao;
+    function nextStep() {
+      if (!validarPassosAnteriores() || !validarPassoAtual(true)) return;
+      if (currentStep < totalSteps) showStep(currentStep + 1);
+    }
 
-    const acessorioHTML = osData.acessorioSim && osData.qualAcessorio.trim() !== '' 
-        ? `<tr><td style="font-weight:bold; padding:5px 0;">ACESSÓRIO:</td><td colspan="3" style="border-bottom:1px solid #000;">${osData.qualAcessorio}</td></tr>` : '';
+    function handleActionButtonClick() {
+      if (!validarPassoAtual(true)) return;
+      if (currentStep === totalSteps) salvarImprimir();
+      else nextStep();
+    }
 
-    const defeitoHTML = osData.defeitoFisicoSim && osData.qualDefeito.trim() !== '' 
-        ? `<tr><td style="font-weight:bold; padding:5px 0;">DEFEITO FÍSICO:</td><td colspan="3" style="border-bottom:1px solid #000;">${osData.qualDefeito}</td></tr>` : '';
+    function collectOSData() {
+      const modelo = document.getElementById('modeloOS').value;
+      return {
+        modeloOS: modelo,
+        modeloOSTexto: modelo === 'celular' ? 'OS para Celular' : 'OS para Computadores e Notebooks',
+        osNumber: document.getElementById('osNumber').textContent,
+        dataEntrada: document.getElementById('dataEntrada').textContent,
+        dataSaida: document.getElementById('dataSaida').textContent,
+        nomeCliente: document.getElementById('nomeCliente').value,
+        telefone: document.getElementById('telefone').value,
+        tecnico: document.getElementById('tecnico').value,
+        equipamento: document.getElementById('equipamento').value,
+        senhaEscrita: (modelo === 'celular' || modelo === 'computador') ? document.getElementById('senhaEscrita').value : '',
+        senhaPadrao: modelo === 'celular' ? senhaPadrao.join(' - ') : '',
+        acessorioSim: !!document.querySelector('input[name="acessorio"][value="sim"]:checked'),
+        qualAcessorio: document.getElementById('qualAcessorio').value,
+        ligaSim: !!document.querySelector('input[name="liga"][value="sim"]:checked'),
+        defeitoFisicoSim: !!document.querySelector('input[name="defeito"][value="sim"]:checked'),
+        qualDefeito: document.getElementById('qualDefeito').value,
+        garantiaDias: document.getElementById('garantiaDiasInput').value || null,
+        observacoes: document.getElementById('observacoes').value,
+        timestamp: new Date().getTime()
+      };
+    }
 
-    const conteudoOS = `
+    function saveOSData(osData) {
+      let history = JSON.parse(localStorage.getItem('os_history') || '[]');
+      const existingIndex = history.findIndex(item => item.osNumber === osData.osNumber);
+      if (existingIndex > -1) history[existingIndex] = osData;
+      else history.push(osData);
+      localStorage.setItem('os_history', JSON.stringify(history));
+    }
+
+    function escaparHTML(valor) {
+      return String(valor ?? '').replace(/[&<>"]/g, m => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[m]));
+    }
+
+    function salvarImprimir() {
+      if (!validarPassoAtual(true)) return;
+      const osData = collectOSData();
+      saveOSData(osData);
+      const getCampo = (valor, padrao = '______') => valor && String(valor).trim() !== '' ? escaparHTML(valor) : padrao;
+      const logoSrc = new URL('img/logo.png', window.location.href).href;
+      const acessorioHTML = osData.acessorioSim && osData.qualAcessorio.trim() !== '' ? `<tr><td style="font-weight:bold; padding:5px 0;">ACESSÓRIO:</td><td colspan="3" style="border-bottom:1px solid #000;">${getCampo(osData.qualAcessorio)}</td></tr>` : '';
+      const defeitoHTML = osData.defeitoFisicoSim && osData.qualDefeito.trim() !== '' ? `<tr><td style="font-weight:bold; padding:5px 0;">DEFEITO FÍSICO:</td><td colspan="3" style="border-bottom:1px solid #000;">${getCampo(osData.qualDefeito)}</td></tr>` : '';
+      const desenharPadraoImpressao = () => {
+        if (osData.modeloOS !== 'celular') return '';
+        const selecionados = String(osData.senhaPadrao || '').split(' - ').filter(Boolean);
+        const pontos = Array.from({ length: 9 }, (_, i) => String(i + 1));
+        const botoes = pontos.map(ponto => {
+          const ativo = selecionados.includes(ponto);
+          return `<div style="width:18px; height:18px; border-radius:50%; border:1.2px solid #000; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:bold; ${ativo ? 'background:#000; color:#fff;' : 'background:#fff; color:#000;'}">${ativo ? ponto : '•'}</div>`;
+        }).join('');
+        return `<div style="display:flex; align-items:center; gap:8px;">
+          <div style="display:grid; grid-template-columns:repeat(3, 18px); grid-template-rows:repeat(3, 18px); gap:7px; border:1px solid #000; padding:6px; background:#f3f3f3;">${botoes}</div>
+          <div style="font-size:9px; line-height:1.2;"><strong>Sequência:</strong><br>${getCampo(osData.senhaPadrao)}</div>
+        </div>`;
+      };
+
+      const senhaHTML = (osData.modeloOS === 'celular' || osData.modeloOS === 'computador') ? `
+        <tr>
+          <td style="width:18%; font-weight:bold; padding:4px 0;">SENHA:</td>
+          <td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.senhaEscrita)}</td>
+          ${osData.modeloOS === 'celular' ? `<td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">PADRÃO:</td><td style="width:35%;">${desenharPadraoImpressao()}</td>` : `<td style="width:15%;"></td><td style="width:35%;"></td>`}
+        </tr>` : '';
+
+      const conteudoOS = `
         <div style="font-family: Arial, sans-serif; font-size: 11px; color:#000; line-height: 1.4;">
-            <div style="text-align:center; margin-bottom:10px; border-bottom: 2px solid #000; padding-bottom: 5px;">
-                <img src="img/logo.png" alt="Logo" style="max-height:50px;"><br>
-                <span style="font-size: 10px;">Contato: 84 99809-6865</span>
+          <div style="text-align:center; margin-bottom:8px; border-bottom:2px solid #000; padding-bottom:6px;">
+            <div style="background:#1D1D1D; padding:6px 8px; border-radius:4px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+              <img src="${logoSrc}" alt="Logo" style="display:block; max-height:44px; max-width:100%; width:auto; margin:0 auto; object-fit:contain;">
             </div>
-            
-            <h3 style="text-align:center; margin:5px 0; font-size: 14px; text-transform: uppercase;">Ordem de Serviço</h3>
-
-            <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
-                <tr>
-                    <td style="width:12%; font-weight:bold;">OS Nº:</td>
-                    <td style="width:28%; font-weight:bold;">${getCampo(osData.osNumber)}</td>
-                    <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">ENTRADA:</td>
-                    <td style="width:15%;">${getCampo(osData.dataEntrada)}</td>
-                    <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">SAÍDA:</td>
-                    <td style="width:15%;">${getCampo(osData.dataSaida)}</td>
-                </tr>
-            </table>
-
-            <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
-                <tr>
-                    <td style="width:18%; font-weight:bold; padding:4px 0;">CLIENTE:</td>
-                    <td colspan="3" style="border-bottom: 0.5px solid #000;">${getCampo(osData.nomeCliente)}</td>
-                </tr>
-                <tr>
-                    <td style="width:18%; font-weight:bold; padding:4px 0;">TELEFONE:</td>
-                    <td style="width:32%; border-bottom: 0.5px solid #000;">${getCampo(osData.telefone)}</td>
-                    <td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">TÉCNICO:</td>
-                    <td style="width:35%; border-bottom: 0.5px solid #000;">${getCampo(osData.tecnico)}</td>
-                </tr>
-                <tr>
-                    <td style="width:18%; font-weight:bold; padding:4px 0;">APARELHO:</td>
-                    <td style="width:32%; border-bottom: 0.5px solid #000;">${getCampo(osData.equipamento)}</td>
-                    <td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">LIGA:</td>
-                    <td style="width:35%; border-bottom: 0.5px solid #000;">${osData.ligaSim ? 'Sim' : 'Não'}</td>
-                </tr>
-                ${acessorioHTML}
-                ${defeitoHTML}
-            </table>
-
-            <div style="margin-top:8px;">
-                <div style="font-weight:bold; font-size: 10px;">OBSERVAÇÕES:</div>
-                <div style="border: 1px solid #000; padding: 5px; min-height: 35px; border-radius: 3px; margin-top:2px;">${getCampo(osData.observacoes)}</div>
+            <div style="font-size:13px; font-weight:bold; color:#000; margin-top:4px; letter-spacing:0.2px;">Contato: 84 99809-6865</div>
+          </div>
+          <h3 style="text-align:center; margin:5px 0; font-size:14px; text-transform:uppercase;">${getCampo(osData.modeloOSTexto)}</h3>
+          <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+            <tr>
+              <td style="width:12%; font-weight:bold;">OS Nº:</td><td style="width:28%; font-weight:bold;">${getCampo(osData.osNumber)}</td>
+              <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">ENTRADA:</td><td style="width:15%;">${getCampo(osData.dataEntrada)}</td>
+              <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">SAÍDA:</td><td style="width:15%;">${getCampo(osData.dataSaida)}</td>
+            </tr>
+          </table>
+          <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
+            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">CLIENTE:</td><td colspan="3" style="border-bottom:0.5px solid #000;">${getCampo(osData.nomeCliente)}</td></tr>
+            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">TELEFONE:</td><td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.telefone)}</td><td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">TÉCNICO:</td><td style="width:35%; border-bottom:0.5px solid #000;">${getCampo(osData.tecnico)}</td></tr>
+            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">APARELHO:</td><td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.equipamento)}</td><td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">LIGA:</td><td style="width:35%; border-bottom:0.5px solid #000;">${osData.ligaSim ? 'Sim' : 'Não'}</td></tr>
+            ${senhaHTML}
+            ${acessorioHTML}
+            ${defeitoHTML}
+          </table>
+          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:10px;">OBSERVAÇÕES:</div><div style="border:1px solid #000; padding:5px; min-height:35px; border-radius:3px; margin-top:2px;">${getCampo(osData.observacoes)}</div></div>
+          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:10px;">SERVIÇO REALIZADO:</div><div style="border:1px solid #000; padding:5px; min-height:45px; border-radius:3px; margin-top:2px;"></div></div>
+          <div style="margin-top:12px; font-size:9.5px; border:1px solid #666; padding:8px; border-radius:5px; background-color:#f9f9f9;">
+            <strong style="display:block; text-align:center; margin-bottom:6px; text-decoration:underline;">TERMOS E CONDIÇÕES</strong>
+            <div style="text-align:justify; line-height:1.3;">
+              <strong>1. Recebimento do Equipamento:</strong> O equipamento entregue será avaliado conforme informações declaradas pelo cliente. Não nos responsabilizamos por itens não declarados.<br>
+              <strong>2. Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis, podendo variar conforme a complexidade. O serviço só será iniciado após aprovação do orçamento.<br>
+              <strong>3. Garantia:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos, oxidação, violação, intervenção de terceiros ou defeitos diferentes do reparo executado.<br>
+              <strong>4. Equipamentos Não Retirados:</strong> Após 30 dias da conclusão ou comunicação para retirada, poderá ser cobrada taxa de armazenamento de R$1,00/dia. Após 90 dias, o equipamento poderá ser considerado abandonado, conforme o Código Civil Art. 1.275, III.<br>
+              <strong>5. Dados, Arquivos e Backups:</strong> A assistência não se responsabiliza por perda, alteração, corrompimento ou ausência de dados, arquivos, fotos, aplicativos, senhas ou backups. O backup prévio é responsabilidade do cliente. Backup solicitado será cobrado à parte e depende das condições do equipamento.<br>
+              <strong>6. Peças Substituídas:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para peças substituídas contra defeitos de fabricação, quando aplicável.
             </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:35px;">
+            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / ENTREGA</span></div>
+            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / RETIRADA</span></div>
+          </div>
+        </div>`;
 
-            <div style="margin-top:8px;">
-                <div style="font-weight:bold; font-size: 10px;">SERVIÇO REALIZADO:</div>
-                <div style="border: 1px solid #000; padding: 5px; min-height: 45px; border-radius: 3px; margin-top:2px;"></div>
-            </div>
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html><head><title>OS - Impressão</title><link rel="preload" as="image" href="${logoSrc}"><style>@page { size:A4 landscape; margin:4mm; } * { box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; } body { margin:0; padding:0; background:#fff; } .wrapper { width:100%; display:flex; justify-content:center; align-items:stretch; gap:4mm; padding:0; box-sizing:border-box; } .via { width:calc((100% - 4mm) / 2); min-height:190mm; border:1px dashed #444; padding:4mm; box-sizing:border-box; page-break-inside:avoid; overflow:hidden; }</style></head>
+        <body><div class="wrapper"><div class="via">${conteudoOS}</div><div class="via">${conteudoOS}</div></div></body></html>`);
+      win.document.close();
+      setTimeout(() => { win.focus(); win.print(); }, 500);
+    }
 
-            <div style="margin-top:12px; font-size:9.5px; border: 1px solid #666; padding: 8px; border-radius: 5px; background-color: #f9f9f9;">
-                <strong style="display:block; text-align:center; margin-bottom:6px; text-decoration: underline;">TERMOS E CONDIÇÕES</strong>
-                <div style="text-align: justify; line-height: 1.3;">
-                    <strong>1. Recebimento do Equipamento:</strong> O equipamento entregue será avaliado, registrando estado físico, avarias e acessórios recebidos. Não nos responsabilizamos por itens não declarados.<br>
-                    <strong>2. Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis. O serviço só será iniciado após aprovação do orçamento pelo cliente.<br>
-                    <strong>3. Garantia:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos ou intervenções de terceiros.<br>
-                    <strong>4. Equipamentos Não Retirados:</strong> Após 30 dias da conclusão, será cobrada taxa de armazenamento de R$1,00/dia. Após 90 dias, o equipamento será considerado abandonado, conforme o Código Civil Art. 1.275, III.<br>
-                    <strong>5. Perda de Dados:</strong> Não nos responsabilizamos por perda de dados. Recomenda-se backup antes da entrega. Backup solicitado será cobrado à parte.<br>
-                    <strong>6. Peças Substituídas:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para peças substituídas contra defeitos de fabricação. Peças originais mediante solicitação e disponibilidade.
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; margin-top:35px;">
-                <div style="text-align:center; width: 45%;">
-                    <div style="border-top:1.2px solid #000; margin-bottom: 3px;"></div>
-                    <span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / ENTREGA</span>
-                </div>
-                <div style="text-align:center; width: 45%;">
-                    <div style="border-top:1.2px solid #000; margin-bottom: 3px;"></div>
-                    <span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / RETIRADA</span>
-                </div>
-            </div>
-        </div>
-    `;
-
-    const win = window.open('', '_blank');
-    win.document.write(`
-        <html>
-        <head>
-            <title>OS BoyVeio - Impressão</title>
-            <style>
-                @page { size: A4 landscape; margin: 5mm; }
-                body { margin: 0; padding: 0; background: #fff; }
-                .wrapper { display: flex; justify-content: center; gap: 12px; padding: 5mm; }
-                .via { 
-                    width: 138mm; 
-                    border: 1px dashed #444; 
-                    padding: 8mm; 
-                    box-sizing: border-box; 
-                }
-            </style>
-        </head>
-        <body>
-            <div class="wrapper">
-                <div class="via">${conteudoOS}</div>
-                <div class="via">${conteudoOS}</div>
-            </div>
-        </body>
-        </html>
-    `);
-    win.document.close();
-    setTimeout(() => { win.focus(); win.print(); }, 500);
-}
-
+    function goHome() { window.location.reload(); }
+    function goHistorico() { alert('Histórico salvo no navegador. Tela de histórico ainda não implementada neste arquivo.'); }
   </script>
 </body>
 </html>
