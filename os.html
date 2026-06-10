@@ -762,16 +762,42 @@
 
     function configurarSenhaPadrao() {
       document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => {
+        botao.dataset.originalText = botao.textContent;
         botao.addEventListener('click', () => {
           const dot = botao.dataset.dot;
           if (!senhaPadrao.includes(dot)) {
             senhaPadrao.push(dot);
-            botao.style.opacity = '0.45';
+          } else {
+            senhaPadrao = senhaPadrao.filter(item => item !== dot);
           }
           atualizarSenhaPadraoTexto();
+          atualizarGradeSenhaPadrao();
         });
       });
       document.getElementById('limparPadrao').addEventListener('click', limparSenhaPadrao);
+    }
+
+    function atualizarGradeSenhaPadrao() {
+      document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => {
+        const ordem = senhaPadrao.indexOf(botao.dataset.dot) + 1;
+        if (ordem > 0) {
+          botao.textContent = ordem;
+          botao.style.opacity = '1';
+          botao.style.fontSize = '18px';
+          botao.style.fontWeight = 'bold';
+          botao.style.border = '1px solid var(--text-light)';
+          botao.style.borderRadius = '50%';
+          botao.style.background = 'rgba(255,255,255,0.15)';
+        } else {
+          botao.textContent = botao.dataset.originalText || '•';
+          botao.style.opacity = '1';
+          botao.style.fontSize = '26px';
+          botao.style.fontWeight = 'normal';
+          botao.style.border = 'none';
+          botao.style.borderRadius = '0';
+          botao.style.background = 'transparent';
+        }
+      });
     }
 
     function atualizarSenhaPadraoTexto() {
@@ -780,8 +806,8 @@
 
     function limparSenhaPadrao() {
       senhaPadrao = [];
-      document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => botao.style.opacity = '1');
       atualizarSenhaPadraoTexto();
+      atualizarGradeSenhaPadrao();
     }
 
     function alternarModeloOS() {
@@ -984,12 +1010,13 @@
         const selecionados = String(osData.senhaPadrao || '').split(' - ').filter(Boolean);
         const pontos = Array.from({ length: 9 }, (_, i) => String(i + 1));
         const botoes = pontos.map(ponto => {
-          const ativo = selecionados.includes(ponto);
-          return `<div style="width:18px; height:18px; border-radius:50%; border:1.2px solid #000; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:bold; ${ativo ? 'background:#000; color:#fff;' : 'background:#fff; color:#000;'}">${ativo ? ponto : '•'}</div>`;
+          const ordem = selecionados.indexOf(ponto) + 1;
+          const ativo = ordem > 0;
+          return `<div style="width:24px; height:24px; border-radius:50%; border:1.5px solid #000; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; ${ativo ? 'background:#000; color:#fff;' : 'background:#fff; color:#000;'}">${ativo ? ordem : '•'}</div>`;
         }).join('');
         return `<div style="display:flex; align-items:center; gap:8px;">
-          <div style="display:grid; grid-template-columns:repeat(3, 18px); grid-template-rows:repeat(3, 18px); gap:7px; border:1px solid #000; padding:6px; background:#f3f3f3;">${botoes}</div>
-          <div style="font-size:9px; line-height:1.2;"><strong>Sequência:</strong><br>${getCampo(osData.senhaPadrao)}</div>
+          <div style="display:grid; grid-template-columns:repeat(3, 24px); grid-template-rows:repeat(3, 24px); gap:7px; border:1.2px solid #000; padding:7px; background:#f3f3f3;">${botoes}</div>
+          <div style="font-size:11px; line-height:1.2;"><strong>Cliques:</strong><br>${getCampo(osData.senhaPadrao)}</div>
         </div>`;
       };
 
@@ -1001,14 +1028,14 @@
         </tr>` : '';
 
       const conteudoOS = `
-        <div style="font-family: Arial, sans-serif; font-size: 11px; color:#000; line-height: 1.4;">
+        <div style="font-family: Arial, sans-serif; font-size: 12px; color:#000; line-height: 1.25;">
           <div style="text-align:center; margin-bottom:8px; border-bottom:2px solid #000; padding-bottom:6px;">
             <div style="background:#1D1D1D; padding:6px 8px; border-radius:4px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
-              <img src="${logoSrc}" alt="Logo" style="display:block; max-height:44px; max-width:100%; width:auto; margin:0 auto; object-fit:contain;">
+              <img src="${logoSrc}" alt="Logo" style="display:block; max-height:54px; max-width:100%; width:auto; margin:0 auto; object-fit:contain;">
             </div>
-            <div style="font-size:13px; font-weight:bold; color:#000; margin-top:4px; letter-spacing:0.2px;">Contato: 84 99809-6865</div>
+            <div style="font-size:15px; font-weight:bold; color:#000; margin-top:4px; letter-spacing:0.2px;">Contato: 84 99809-6865</div>
           </div>
-          <h3 style="text-align:center; margin:5px 0; font-size:14px; text-transform:uppercase;">${getCampo(osData.modeloOSTexto)}</h3>
+          <h3 style="text-align:center; margin:5px 0; font-size:15px; text-transform:uppercase;">${getCampo(osData.modeloOSTexto)}</h3>
           <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
             <tr>
               <td style="width:12%; font-weight:bold;">OS Nº:</td><td style="width:28%; font-weight:bold;">${getCampo(osData.osNumber)}</td>
@@ -1024,11 +1051,11 @@
             ${acessorioHTML}
             ${defeitoHTML}
           </table>
-          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:10px;">OBSERVAÇÕES:</div><div style="border:1px solid #000; padding:5px; min-height:35px; border-radius:3px; margin-top:2px;">${getCampo(osData.observacoes)}</div></div>
-          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:10px;">SERVIÇO REALIZADO:</div><div style="border:1px solid #000; padding:5px; min-height:45px; border-radius:3px; margin-top:2px;"></div></div>
-          <div style="margin-top:12px; font-size:9.5px; border:1px solid #666; padding:8px; border-radius:5px; background-color:#f9f9f9;">
+          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:11px;">OBSERVAÇÕES:</div><div style="border:1px solid #000; padding:5px; min-height:30px; border-radius:3px; margin-top:2px;">${getCampo(osData.observacoes)}</div></div>
+          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:11px;">SERVIÇO REALIZADO:</div><div style="border:1px solid #000; padding:5px; min-height:35px; border-radius:3px; margin-top:2px;"></div></div>
+          <div style="margin-top:12px; font-size:8.7px; border:1px solid #666; padding:5px; border-radius:5px; background-color:#f9f9f9;">
             <strong style="display:block; text-align:center; margin-bottom:6px; text-decoration:underline;">TERMOS E CONDIÇÕES</strong>
-            <div style="text-align:justify; line-height:1.3;">
+            <div style="text-align:justify; line-height:1.18;">
               <strong>1. Recebimento do Equipamento:</strong> O equipamento entregue será avaliado conforme informações declaradas pelo cliente. Não nos responsabilizamos por itens não declarados.<br>
               <strong>2. Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis, podendo variar conforme a complexidade. O serviço só será iniciado após aprovação do orçamento.<br>
               <strong>3. Garantia:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos, oxidação, violação, intervenção de terceiros ou defeitos diferentes do reparo executado.<br>
@@ -1037,22 +1064,22 @@
               <strong>6. Peças Substituídas:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para peças substituídas contra defeitos de fabricação, quando aplicável.
             </div>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-top:35px;">
-            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / ENTREGA</span></div>
-            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9px; font-weight:bold;">ASSINATURA CLIENTE / RETIRADA</span></div>
+          <div style="display:flex; justify-content:space-between; margin-top:24px;">
+            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9.5px; font-weight:bold;">ASSINATURA CLIENTE / ENTREGA</span></div>
+            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9.5px; font-weight:bold;">ASSINATURA CLIENTE / RETIRADA</span></div>
           </div>
         </div>`;
 
       const win = window.open('', '_blank');
       win.document.write(`
-        <html><head><title>OS - Impressão</title><link rel="preload" as="image" href="${logoSrc}"><style>@page { size:A4 landscape; margin:4mm; } * { box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; } body { margin:0; padding:0; background:#fff; } .wrapper { width:100%; display:flex; justify-content:center; align-items:stretch; gap:4mm; padding:0; box-sizing:border-box; } .via { width:calc((100% - 4mm) / 2); min-height:190mm; border:1px dashed #444; padding:4mm; box-sizing:border-box; page-break-inside:avoid; overflow:hidden; }</style></head>
+        <html><head><title>OS - Impressão</title><link rel="preload" as="image" href="${logoSrc}"><style>@page { size:A4 landscape; margin:3mm; } * { box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; } body { margin:0; padding:0; background:#fff; } .wrapper { width:100%; display:flex; justify-content:center; align-items:flex-start; gap:3mm; padding:0; box-sizing:border-box; } .via { width:calc((100% - 3mm) / 2); min-height:203mm; border:1px dashed #444; padding:3mm; box-sizing:border-box; page-break-inside:avoid; overflow:hidden; } table { table-layout:fixed; } td { vertical-align:top; } </style></head>
         <body><div class="wrapper"><div class="via">${conteudoOS}</div><div class="via">${conteudoOS}</div></div></body></html>`);
       win.document.close();
       setTimeout(() => { win.focus(); win.print(); }, 500);
     }
 
-    function goHome() { window.location.reload(); }
-    function goHistorico() { alert('Histórico salvo no navegador. Tela de histórico ainda não implementada neste arquivo.'); }
+    function goHome() { window.location.href = 'index.html'; }
+    function goHistorico() { window.location.href = 'historico.html'; }
   </script>
 </body>
 </html>
