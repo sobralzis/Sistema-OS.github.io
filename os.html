@@ -453,6 +453,67 @@
           width: 100% !important;
     }
 
+
+
+    /* ===== BOTÕES DO MODELO DA OS ===== */
+    .modelo-os-inline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+
+    .modelo-os-label {
+      margin: 0;
+      min-width: 115px;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .modelo-os-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      flex-wrap: nowrap;
+    }
+
+    .modelo-os-btn {
+      background: var(--bg-secondary);
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .modelo-os-btn:hover, .modelo-os-btn.selecionado {
+      border-color: var(--text-light);
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.12);
+      transform: translateY(-1px);
+    }
+
+    .modelo-os-btn.invalid-field {
+      border-color: var(--error-color) !important;
+      box-shadow: 0 0 0 2px rgba(255,68,68,0.25) !important;
+    }
+
+
+    @media (max-width: 620px) {
+      .modelo-os-inline {
+        flex-wrap: wrap;
+      }
+      .modelo-os-buttons {
+        flex-wrap: wrap;
+      }
+    }
+
     /* ===== RESPONSIVIDADE ===== */
     @media (max-width: 768px) {
       .radio-container {
@@ -525,13 +586,14 @@
     <div class="form-step" data-step="1">
       <div class="input-area">
         <div class="linha">
-          <div class="col">
-            <label for="modeloOS">MODELO DA OS</label>
-            <select id="modeloOS" required data-form-field="true">
-              <option value="">Selecione</option>
-              <option value="celular">OS para Celular</option>
-              <option value="computador">OS para Computadores e Notebooks</option>
-            </select>
+          <div class="col modelo-os-inline">
+            <label class="modelo-os-label">MODELO DA OS</label>
+            <input type="hidden" id="modeloOS" value="">
+            <div class="modelo-os-buttons" id="modeloOSButtons">
+              <button type="button" class="modelo-os-btn" data-modelo="celular">Celular</button>
+              <button type="button" class="modelo-os-btn" data-modelo="computador">PC / NOTE</button>
+              <button type="button" class="modelo-os-btn" data-modelo="caixa_som">Caixa de Som</button>
+            </div>
           </div>
         </div>
       </div>
@@ -570,10 +632,16 @@
 
     <div class="form-step" data-step="4">
       <div class="input-area">
-        <div class="linha">
-          <div class="col">
-            <label for="equipamento">EQUIPAMENTO</label>
-            <input type="text" id="equipamento" required data-form-field="true">
+        <div id="marcaModeloArea">
+          <div class="linha">
+            <div class="col">
+              <label for="marcaEquipamento">MARCA <span style="font-weight:normal; color:var(--readonly-text);">(opcional)</span></label>
+              <input type="text" id="marcaEquipamento" placeholder="Ex.: Samsung, Motorola, Dell, Lenovo" data-form-field="true">
+            </div>
+            <div class="col">
+              <label for="modeloEquipamento">MODELO / IDENTIFICAÇÃO DO EQUIPAMENTO</label>
+              <input type="text" id="modeloEquipamento" placeholder="Ex.: A15, Inspiron, PC Gamer preto, caixa JBL" required data-form-field="true">
+            </div>
           </div>
         </div>
         <div id="senhaCelularArea" class="hidden">
@@ -644,8 +712,14 @@
       <div class="input-area">
         <div class="linha">
           <div class="col">
+            <label for="descricaoDefeito">DESCRIÇÃO DO DEFEITO</label>
+            <textarea id="descricaoDefeito" rows="3" required placeholder="Relate aqui o defeito informado pelo cliente" data-form-field="true"></textarea>
+          </div>
+        </div>
+        <div class="linha">
+          <div class="col">
             <label for="observacoes">OBSERVAÇÕES</label>
-            <textarea id="observacoes" rows="3" required data-form-field="true"></textarea>
+            <textarea id="observacoes" rows="3" placeholder="Informações adicionais, estado do aparelho, urgência, detalhes combinados etc." data-form-field="true"></textarea>
           </div>
         </div>
       </div>
@@ -681,6 +755,39 @@
     const totalSteps = 7;
     let senhaPadrao = [];
 
+    const MODELOS_OS = {
+      celular: {
+        texto: 'OS para Celular',
+        tecnicoPadrao: 'Bruno Santos',
+        mostrarSenha: true,
+        mostrarPadrao: true,
+        mostrarMarcaModelo: true,
+        mostrarLiga: true,
+        mostrarAcessorio: true,
+        mostrarDefeitoFisico: true
+      },
+      computador: {
+        texto: 'OS para Computadores e Notebooks',
+        tecnicoPadrao: '',
+        mostrarSenha: true,
+        mostrarPadrao: false,
+        mostrarMarcaModelo: true,
+        mostrarLiga: true,
+        mostrarAcessorio: true,
+        mostrarDefeitoFisico: true
+      },
+      caixa_som: {
+        texto: 'OS para Caixas de Som',
+        tecnicoPadrao: 'Bruno Santos',
+        mostrarSenha: false,
+        mostrarPadrao: false,
+        mostrarMarcaModelo: true,
+        mostrarLiga: false,
+        mostrarAcessorio: false,
+        mostrarDefeitoFisico: false
+      }
+    };
+
     document.addEventListener('DOMContentLoaded', inicializarOS);
 
     function inicializarOS() {
@@ -692,6 +799,7 @@
       configurarRadios('acessorio', 'campoAcessorio', 'qualAcessorio');
       configurarRadios('defeito', 'campoDefeito', 'qualDefeito');
       configurarSenhaPadrao();
+      configurarModeloOSButtons();
 
       document.querySelectorAll('[data-form-field="true"]').forEach(campo => {
         campo.addEventListener('keydown', handleEnterKey);
@@ -760,6 +868,22 @@
       });
     }
 
+    function configurarModeloOSButtons() {
+      document.querySelectorAll('.modelo-os-btn').forEach(botao => {
+        botao.addEventListener('click', () => {
+          const modelo = botao.dataset.modelo;
+          document.getElementById('modeloOS').value = modelo;
+          document.querySelectorAll('.modelo-os-btn').forEach(btn => {
+            btn.classList.toggle('selecionado', btn === botao);
+            btn.classList.remove('invalid-field');
+          });
+          alternarModeloOS();
+          iniciarOSAoSelecionarModelo();
+          validarPassoAtual(false);
+        });
+      });
+    }
+
     function configurarSenhaPadrao() {
       document.querySelectorAll('#padraoGrid button[data-dot]').forEach(botao => {
         botao.dataset.originalText = botao.textContent;
@@ -812,21 +936,45 @@
 
     function alternarModeloOS() {
       const modelo = document.getElementById('modeloOS').value;
+      const config = MODELOS_OS[modelo] || {};
+      const tecnico = document.getElementById('tecnico');
       const areaSenha = document.getElementById('senhaCelularArea');
       const areaPadrao = document.getElementById('senhaPadraoArea');
+      const marcaModeloArea = document.getElementById('marcaModeloArea');
+      const ligaGroup = document.getElementById('ligaGroup');
+      const acessorioGroup = document.getElementById('acessorioGroup');
+      const defeitoGroup = document.getElementById('defeitoGroup');
+      const campoAcessorio = document.getElementById('campoAcessorio');
+      const campoDefeito = document.getElementById('campoDefeito');
 
-      if (modelo === 'celular' || modelo === 'computador') {
-        areaSenha.classList.remove('hidden');
-      } else {
-        areaSenha.classList.add('hidden');
-        document.getElementById('senhaEscrita').value = '';
+      if (config.tecnicoPadrao) tecnico.value = config.tecnicoPadrao;
+
+      areaSenha.classList.toggle('hidden', !config.mostrarSenha);
+      areaPadrao.classList.toggle('hidden', !config.mostrarPadrao);
+      marcaModeloArea.classList.toggle('hidden', !config.mostrarMarcaModelo);
+      ligaGroup.classList.toggle('hidden', !config.mostrarLiga);
+      acessorioGroup.classList.toggle('hidden', !config.mostrarAcessorio);
+      defeitoGroup.classList.toggle('hidden', !config.mostrarDefeitoFisico);
+
+      if (!config.mostrarSenha) document.getElementById('senhaEscrita').value = '';
+      if (!config.mostrarPadrao) limparSenhaPadrao();
+      if (!config.mostrarMarcaModelo) {
+        document.getElementById('marcaEquipamento').value = '';
+        document.getElementById('modeloEquipamento').value = '';
       }
 
-      if (modelo === 'celular') {
-        areaPadrao.classList.remove('hidden');
-      } else {
-        areaPadrao.classList.add('hidden');
-        limparSenhaPadrao();
+      if (!config.mostrarLiga) {
+        document.querySelectorAll('input[name="liga"]').forEach(r => r.checked = false);
+      }
+      if (!config.mostrarAcessorio) {
+        document.querySelector('input[name="acessorio"][value="nao"]').checked = true;
+        campoAcessorio.classList.add('hidden');
+        document.getElementById('qualAcessorio').value = '';
+      }
+      if (!config.mostrarDefeitoFisico) {
+        document.querySelector('input[name="defeito"][value="nao"]').checked = true;
+        campoDefeito.classList.add('hidden');
+        document.getElementById('qualDefeito').value = '';
       }
     }
 
@@ -880,7 +1028,18 @@
       const stepElement = document.querySelector(`.form-step[data-step="${currentStep}"]`);
       if (!stepElement) return true;
       let valido = true;
-      stepElement.querySelectorAll('input, select, textarea').forEach(campo => campo.classList.remove('invalid-field'));
+      stepElement.querySelectorAll('input, select, textarea, button').forEach(campo => campo.classList.remove('invalid-field'));
+
+      if (currentStep === 1) {
+        const modeloEscolhido = document.getElementById('modeloOS').value;
+        if (!modeloEscolhido) {
+          document.querySelectorAll('.modelo-os-btn').forEach(btn => btn.classList.add('invalid-field'));
+          if (mostrarAlerta) alert('Selecione o modelo da OS');
+          const botao = document.getElementById('mainActionButton');
+          if (botao) botao.disabled = true;
+          return false;
+        }
+      }
 
       const campos = Array.from(stepElement.querySelectorAll('input:not([type="radio"]), select, textarea')).filter(campo => {
         return campo.offsetParent !== null && !campo.closest('.hidden') && !campo.disabled && !campo.readOnly;
@@ -892,6 +1051,7 @@
         else if (campo.id === 'telefone') ok = campo.value.replace(/\D/g, '').length === 11;
         else if (campo.id === 'modeloOS') ok = campo.value !== '';
         else if (campo.id === 'tecnico') ok = campo.value !== '';
+        else if (campo.id === 'modeloEquipamento') ok = campo.value.trim().length >= 2;
         else if (campo.id === 'qualAcessorio') ok = !document.querySelector('input[name="acessorio"][value="sim"]:checked') || campo.value.trim().length >= 3;
         else if (campo.id === 'qualDefeito') ok = !document.querySelector('input[name="defeito"][value="sim"]:checked') || campo.value.trim().length >= 3;
         else if (campo.required) ok = campo.value.trim() !== '';
@@ -945,6 +1105,11 @@
       botao.textContent = currentStep === totalSteps ? 'Salvar e Imprimir' : 'Próximo →';
       atualizarProgresso();
       validarPassoAtual(false);
+      if (currentStep === 1) {
+        const botaoModelo = document.querySelector('.modelo-os-btn');
+        if (botaoModelo) botaoModelo.focus();
+        return;
+      }
       const campo = document.querySelector(`.form-step[data-step="${currentStep}"] [data-form-field="true"]:not([type="radio"])`);
       if (campo && campo.offsetParent !== null) campo.focus();
     }
@@ -962,24 +1127,28 @@
 
     function collectOSData() {
       const modelo = document.getElementById('modeloOS').value;
+      const config = MODELOS_OS[modelo] || {};
+      const ligaSelecionado = document.querySelector('input[name="liga"]:checked');
       return {
         modeloOS: modelo,
-        modeloOSTexto: modelo === 'celular' ? 'OS para Celular' : 'OS para Computadores e Notebooks',
+        modeloOSTexto: config.texto || 'Ordem de Serviço',
         osNumber: document.getElementById('osNumber').textContent,
         dataEntrada: document.getElementById('dataEntrada').textContent,
         dataSaida: document.getElementById('dataSaida').textContent,
         nomeCliente: document.getElementById('nomeCliente').value,
         telefone: document.getElementById('telefone').value,
         tecnico: document.getElementById('tecnico').value,
-        equipamento: document.getElementById('equipamento').value,
-        senhaEscrita: (modelo === 'celular' || modelo === 'computador') ? document.getElementById('senhaEscrita').value : '',
-        senhaPadrao: modelo === 'celular' ? senhaPadrao.join(' - ') : '',
-        acessorioSim: !!document.querySelector('input[name="acessorio"][value="sim"]:checked'),
-        qualAcessorio: document.getElementById('qualAcessorio').value,
-        ligaSim: !!document.querySelector('input[name="liga"][value="sim"]:checked'),
-        defeitoFisicoSim: !!document.querySelector('input[name="defeito"][value="sim"]:checked'),
-        qualDefeito: document.getElementById('qualDefeito').value,
+        marcaEquipamento: config.mostrarMarcaModelo ? document.getElementById('marcaEquipamento').value : '',
+        modeloEquipamento: config.mostrarMarcaModelo ? document.getElementById('modeloEquipamento').value : '',
+        senhaEscrita: config.mostrarSenha ? document.getElementById('senhaEscrita').value : '',
+        senhaPadrao: config.mostrarPadrao ? senhaPadrao.join(' - ') : '',
+        acessorioSim: config.mostrarAcessorio && !!document.querySelector('input[name="acessorio"][value="sim"]:checked'),
+        qualAcessorio: config.mostrarAcessorio ? document.getElementById('qualAcessorio').value : '',
+        ligaSim: config.mostrarLiga && ligaSelecionado ? ligaSelecionado.value === 'sim' : null,
+        defeitoFisicoSim: config.mostrarDefeitoFisico && !!document.querySelector('input[name="defeito"][value="sim"]:checked'),
+        qualDefeito: config.mostrarDefeitoFisico ? document.getElementById('qualDefeito').value : '',
         garantiaDias: document.getElementById('garantiaDiasInput').value || null,
+        descricaoDefeito: document.getElementById('descricaoDefeito').value,
         observacoes: document.getElementById('observacoes').value,
         timestamp: new Date().getTime()
       };
@@ -1003,70 +1172,115 @@
       saveOSData(osData);
       const getCampo = (valor, padrao = '______') => valor && String(valor).trim() !== '' ? escaparHTML(valor) : padrao;
       const logoSrc = new URL('img/logo.png', window.location.href).href;
-      const acessorioHTML = osData.acessorioSim && osData.qualAcessorio.trim() !== '' ? `<tr><td style="font-weight:bold; padding:5px 0;">ACESSÓRIO:</td><td colspan="3" style="border-bottom:1px solid #000;">${getCampo(osData.qualAcessorio)}</td></tr>` : '';
-      const defeitoHTML = osData.defeitoFisicoSim && osData.qualDefeito.trim() !== '' ? `<tr><td style="font-weight:bold; padding:5px 0;">DEFEITO FÍSICO:</td><td colspan="3" style="border-bottom:1px solid #000;">${getCampo(osData.qualDefeito)}</td></tr>` : '';
+      const config = MODELOS_OS[osData.modeloOS] || {};
+
+      const acessorioHTML = osData.acessorioSim && osData.qualAcessorio.trim() !== '' ? `<tr><td class="lbl">ACESSÓRIO:</td><td colspan="3" class="line">${getCampo(osData.qualAcessorio)}</td></tr>` : '';
+      const defeitoHTML = osData.defeitoFisicoSim && osData.qualDefeito.trim() !== '' ? `<tr><td class="lbl">DEFEITO FÍSICO:</td><td colspan="3" class="line">${getCampo(osData.qualDefeito)}</td></tr>` : '';
+      const ligaHTML = config.mostrarLiga ? `<td class="lbl right">LIGA:</td><td class="line">${osData.ligaSim ? 'Sim' : 'Não'}</td>` : `<td></td><td></td>`;
+      const marcaModeloHTML = config.mostrarMarcaModelo ? `
+          <tr><td class="lbl">MARCA:</td><td class="line">${getCampo(osData.marcaEquipamento, '')}</td><td class="lbl right">MODELO:</td><td class="line">${getCampo(osData.modeloEquipamento)}</td></tr>` : '';
+
       const desenharPadraoImpressao = () => {
-        if (osData.modeloOS !== 'celular') return '';
+        if (!config.mostrarPadrao) return '';
         const selecionados = String(osData.senhaPadrao || '').split(' - ').filter(Boolean);
         const pontos = Array.from({ length: 9 }, (_, i) => String(i + 1));
         const botoes = pontos.map(ponto => {
           const ordem = selecionados.indexOf(ponto) + 1;
           const ativo = ordem > 0;
-          return `<div style="width:24px; height:24px; border-radius:50%; border:1.5px solid #000; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:bold; ${ativo ? 'background:#000; color:#fff;' : 'background:#fff; color:#000;'}">${ativo ? ordem : '•'}</div>`;
+          return `<div class="ponto ${ativo ? 'ativo' : ''}">${ativo ? ordem : '•'}</div>`;
         }).join('');
-        return `<div style="display:flex; align-items:center; gap:8px;">
-          <div style="display:grid; grid-template-columns:repeat(3, 24px); grid-template-rows:repeat(3, 24px); gap:7px; border:1.2px solid #000; padding:7px; background:#f3f3f3;">${botoes}</div>
-          <div style="font-size:11px; line-height:1.2;"><strong>Cliques:</strong><br>${getCampo(osData.senhaPadrao)}</div>
-        </div>`;
+        return `<div class="padrao"><div class="grid-padrao">${botoes}</div><div><strong>Cliques:</strong><br>${getCampo(osData.senhaPadrao)}</div></div>`;
       };
 
-      const senhaHTML = (osData.modeloOS === 'celular' || osData.modeloOS === 'computador') ? `
+      const senhaHTML = config.mostrarSenha ? `
         <tr>
-          <td style="width:18%; font-weight:bold; padding:4px 0;">SENHA:</td>
-          <td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.senhaEscrita)}</td>
-          ${osData.modeloOS === 'celular' ? `<td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">PADRÃO:</td><td style="width:35%;">${desenharPadraoImpressao()}</td>` : `<td style="width:15%;"></td><td style="width:35%;"></td>`}
+          <td class="lbl">SENHA:</td>
+          <td class="line">${getCampo(osData.senhaEscrita)}</td>
+          ${config.mostrarPadrao ? `<td class="lbl right">PADRÃO:</td><td>${desenharPadraoImpressao()}</td>` : `<td></td><td></td>`}
         </tr>` : '';
 
-      const conteudoOS = `
-        <div style="font-family: Arial, sans-serif; font-size: 11px; color:#000; line-height: 1.18;">
-          <div style="text-align:center; margin-bottom:8px; border-bottom:2px solid #000; padding-bottom:6px;">
-            <div style="background:#1D1D1D; padding:6px 8px; border-radius:4px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
-              <img src="${logoSrc}" alt="Logo" style="display:block; max-height:42px; max-width:100%; width:auto; margin:0 auto; object-fit:contain;">
-            </div>
-            <div style="font-size:13px; font-weight:900; color:#000; margin-top:4px; letter-spacing:0.2px;">Contato: 84 99809-6865</div>
+      const avisoHTML = `
+        <div class="aviso-retirada">
+          <strong>ATENÇÃO</strong><br>
+          A apresentação desta Ordem de Serviço agiliza a retirada do equipamento e o atendimento da garantia.<br>
+          Na ausência deste documento, a assistência poderá solicitar documento oficial ou outro meio de confirmação da identidade.
+        </div>`;
+
+      const termosHTML = `
+        <div class="termos-print">
+          <strong class="titulo-termos">TERMOS E CONDIÇÕES</strong>
+          <div>
+            <strong>1. Recebimento:</strong> O equipamento foi recebido nas condições descritas nesta OS. A assistência não se responsabiliza por acessórios, chips, cartões ou itens não registrados.<br>
+            <strong>2. Diagnóstico:</strong> O diagnóstico será realizado em até 3 dias úteis, podendo variar conforme a complexidade. Nenhum serviço será executado sem autorização do cliente.<br>
+            <strong>3. Garantia:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong>, válida somente para o serviço executado e/ou peça substituída. Não cobre mau uso, queda, líquido, oxidação, violação, intervenção de terceiros ou defeito diferente do reparo realizado.<br>
+            <strong>4. Não retirada:</strong> Após 30 dias da conclusão ou comunicação para retirada, poderá ser cobrada taxa de armazenamento de R$1,00 por dia. Após 90 dias, o equipamento poderá ser considerado abandonado, conforme legislação aplicável.<br>
+            <strong>5. Dados:</strong> O cliente é responsável pelo backup. A assistência não se responsabiliza por perda de arquivos, fotos, aplicativos, senhas ou dados armazenados.<br>
+            <strong>6. Aprovação:</strong> A assinatura na via da loja confirma ciência dos termos e das condições em que o equipamento foi entregue.
           </div>
-          <h3 style="text-align:center; margin:5px 0; font-size:13px; text-transform:uppercase;">${getCampo(osData.modeloOSTexto)}</h3>
-          <table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
-            <tr>
-              <td style="width:12%; font-weight:bold;">OS Nº:</td><td style="width:28%; font-weight:bold;">${getCampo(osData.osNumber)}</td>
-              <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">ENTRADA:</td><td style="width:15%;">${getCampo(osData.dataEntrada)}</td>
-              <td style="width:15%; font-weight:bold; text-align:right; padding-right:5px;">SAÍDA:</td><td style="width:15%;">${getCampo(osData.dataSaida)}</td>
-            </tr>
-          </table>
-          <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
-            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">CLIENTE:</td><td colspan="3" style="border-bottom:0.5px solid #000;">${getCampo(osData.nomeCliente)}</td></tr>
-            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">TELEFONE:</td><td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.telefone)}</td><td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">TÉCNICO:</td><td style="width:35%; border-bottom:0.5px solid #000;">${getCampo(osData.tecnico)}</td></tr>
-            <tr><td style="width:18%; font-weight:bold; padding:4px 0;">APARELHO:</td><td style="width:32%; border-bottom:0.5px solid #000;">${getCampo(osData.equipamento)}</td><td style="width:15%; font-weight:bold; text-align:right; padding-right:8px;">LIGA:</td><td style="width:35%; border-bottom:0.5px solid #000;">${osData.ligaSim ? 'Sim' : 'Não'}</td></tr>
-            ${senhaHTML}
-            ${acessorioHTML}
-            ${defeitoHTML}
-          </table>
-          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:11px;">OBSERVAÇÕES:</div><div style="border:1px solid #000; padding:5px; min-height:30px; border-radius:3px; margin-top:2px;">${getCampo(osData.observacoes)}</div></div>
-          <div style="margin-top:8px;"><div style="font-weight:bold; font-size:11px;">SERVIÇO REALIZADO:</div><div style="border:1px solid #000; padding:5px; min-height:35px; border-radius:3px; margin-top:2px;"></div></div>
-          <div style="margin-top:12px; font-size:7.8px; border:1px solid #666; padding:5px; border-radius:5px; background-color:#f9f9f9;">
-            <strong style="display:block; text-align:center; margin-bottom:6px; text-decoration:underline;">TERMOS E CONDIÇÕES</strong>
-            <div style="text-align:justify; line-height:1.12;">
-              <strong>1. Recebimento do Equipamento:</strong> O equipamento entregue será avaliado conforme informações declaradas pelo cliente. Não nos responsabilizamos por itens não declarados.<br>
-              <strong>2. Diagnóstico e Orçamento:</strong> O diagnóstico será realizado em até 3 dias úteis, podendo variar conforme a complexidade. O serviço só será iniciado após aprovação do orçamento.<br>
-              <strong>3. Garantia:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para o serviço realizado, limitada ao reparo efetuado. Não cobre mau uso, quedas, líquidos, oxidação, violação, intervenção de terceiros ou defeitos diferentes do reparo executado.<br>
-              <strong>4. Equipamentos Não Retirados:</strong> Após 30 dias da conclusão ou comunicação para retirada, poderá ser cobrada taxa de armazenamento de R$1,00/dia. Após 90 dias, o equipamento poderá ser considerado abandonado, conforme o Código Civil Art. 1.275, III.<br>
-              <strong>5. Dados, Arquivos e Backups:</strong> A assistência não se responsabiliza por perda, alteração, corrompimento ou ausência de dados, arquivos, fotos, aplicativos, senhas ou backups. O backup prévio é responsabilidade do cliente. Backup solicitado será cobrado à parte e depende das condições do equipamento.<br>
-              <strong>6. Peças Substituídas:</strong> Garantia de <strong>${getCampo(osData.garantiaDias, '______')} dias</strong> para peças substituídas contra defeitos de fabricação, quando aplicável.
-            </div>
+        </div>`;
+
+      const blocoDados = `
+        <h3>${getCampo(osData.modeloOSTexto)}</h3>
+        ${avisoHTML}
+        <table class="dados">
+          <tr>
+            <td class="lbl os">OS Nº:</td><td class="bold">${getCampo(osData.osNumber)}</td>
+            <td class="lbl right">ENTRADA:</td><td>${getCampo(osData.dataEntrada)}</td>
+            <td class="lbl right">SAÍDA:</td><td>${getCampo(osData.dataSaida)}</td>
+          </tr>
+        </table>
+        <table class="dados">
+          <tr><td class="lbl">CLIENTE:</td><td colspan="3" class="line">${getCampo(osData.nomeCliente)}</td></tr>
+          <tr><td class="lbl">TELEFONE:</td><td class="line">${getCampo(osData.telefone)}</td><td class="lbl right">TÉCNICO:</td><td class="line">${getCampo(osData.tecnico)}</td></tr>
+          ${marcaModeloHTML}
+          ${config.mostrarLiga ? `<tr><td class="lbl">LIGA:</td><td class="line">${osData.ligaSim ? 'Sim' : 'Não'}</td><td></td><td></td></tr>` : ''}
+          ${senhaHTML}
+          ${acessorioHTML}
+          ${defeitoHTML}
+        </table>
+        <div class="campo-bloco"><strong>DESCRIÇÃO DO DEFEITO:</strong><div>${getCampo(osData.descricaoDefeito)}</div></div>
+        <div class="campo-bloco"><strong>OBSERVAÇÕES:</strong><div>${getCampo(osData.observacoes, '')}</div></div>
+        <div class="campo-bloco"><strong>SERVIÇO REALIZADO:</strong><div></div></div>`;
+
+      const topoVia = (nomeVia) => `
+        <div class="topo-via">
+          <div class="logo-box"><img src="${logoSrc}" alt="Logo"></div>
+          <div class="via-tag">${nomeVia}</div>
+          <div class="contato-print">Contato: 84 99809-6865</div>
+        </div>`;
+
+      const viaCliente = `
+        <div class="conteudo-print">
+          ${topoVia('VIA CLIENTE')}
+          ${blocoDados}
+          ${termosHTML}
+          <div class="guarde-via">GUARDE ESTA VIA PARA RETIRADA DO EQUIPAMENTO E PARA ATENDIMENTO DA GARANTIA.</div>
+        </div>`;
+
+      const viaLoja = `
+        <div class="conteudo-print loja">
+          ${topoVia('VIA LOJA')}
+          ${blocoDados}
+          ${termosHTML}
+          <div class="assinatura-entrada">
+            <strong>ENTRADA DO EQUIPAMENTO</strong><br>
+            Declaro que entreguei o equipamento nas condições descritas nesta Ordem de Serviço.
+            <div class="linha-assina"></div><span>ASSINATURA DO CLIENTE</span>
           </div>
-          <div style="display:flex; justify-content:space-between; margin-top:24px;">
-            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9.5px; font-weight:bold;">ASSINATURA CLIENTE / ENTREGA</span></div>
-            <div style="text-align:center; width:45%;"><div style="border-top:1.2px solid #000; margin-bottom:3px;"></div><span style="font-size:9.5px; font-weight:bold;">ASSINATURA CLIENTE / RETIRADA</span></div>
+          <div class="retirada-box">
+            <strong>RETIRADA DO EQUIPAMENTO</strong>
+            <div class="ret-grid">
+              <div>Retirado por: <span></span></div><div>CPF: <span></span></div>
+              <div>Documento: ( ) RG  ( ) CNH  ( ) CPF Digital  ( ) Não apresentou</div>
+              <div>Via do cliente apresentada? ( ) Sim  ( ) Não</div>
+              <div>Autorizado pelo titular? ( ) Sim  ( ) Não se aplica</div>
+              <div>Responsável pela entrega: <span></span></div>
+              <div class="obs-retirada">Observações da retirada:<br><span></span><br><span></span></div>
+            </div>
+            <div class="assinaturas-retirada">
+              <div><div class="linha-assina"></div><span>ASSINATURA DE QUEM RETIROU</span></div>
+              <div><div class="linha-assina"></div><span>DATA / HORA</span></div>
+            </div>
           </div>
         </div>`;
 
@@ -1076,29 +1290,48 @@
           @page { size:A4 landscape; margin:4mm; }
           * { box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
           html, body { width:297mm; height:210mm; margin:0; padding:0; background:#fff; overflow:hidden; }
-          body { font-family:Arial, sans-serif; }
-          .wrapper {
-            width:289mm;
-            height:202mm;
-            display:grid;
-            grid-template-columns:144.5mm 144.5mm;
-            gap:0;
-            align-items:stretch;
-            justify-content:center;
-          }
-          .via {
-            width:144.5mm;
-            height:202mm;
-            border:1px dashed #444;
-            padding:3.5mm;
-            overflow:hidden;
-            page-break-inside:avoid;
-          }
+          body { font-family:Arial, sans-serif; color:#000; }
+          .wrapper { width:289mm; height:202mm; display:grid; grid-template-columns:144.5mm 144.5mm; gap:0; align-items:stretch; justify-content:center; }
+          .via { width:144.5mm; height:202mm; border:1px dashed #444; padding:3mm; overflow:hidden; page-break-inside:avoid; }
           .via:first-child { border-right:none; }
+          .conteudo-print { font-size:9.2px; line-height:1.08; }
+          .loja { font-size:8.4px; line-height:1.02; }
+          .topo-via { position:relative; text-align:center; margin-bottom:4px; border-bottom:2px solid #000; padding-bottom:3px; }
+          .logo-box { background:#1D1D1D; padding:4px 8px; border-radius:3px; }
+          .logo-box img { display:block; max-height:32px; max-width:100%; width:auto; margin:0 auto; object-fit:contain; }
+          .via-tag { position:absolute; top:3px; right:3px; border:1.4px solid #000; padding:3px 7px; background:#fff; font-size:10px; font-weight:900; letter-spacing:0.4px; }
+          .contato-print { font-size:11px; font-weight:900; margin-top:2px; }
+          h3 { text-align:center; margin:3px 0; font-size:11px; text-transform:uppercase; }
+          .aviso-retirada { border:1.4px solid #000; padding:3px 4px; margin:3px 0 5px; text-align:center; font-size:8.2px; line-height:1.08; }
+          .dados { width:100%; border-collapse:collapse; margin-bottom:4px; table-layout:fixed; }
+          .dados td { vertical-align:top; padding:2px 0; }
+          .lbl { width:18%; font-weight:bold; }
+          .lbl.os { width:12%; }
+          .right { text-align:right; padding-right:5px !important; }
+          .line { border-bottom:0.5px solid #000; }
+          .bold { font-weight:bold; }
+          .campo-bloco { margin-top:4px; }
+          .campo-bloco div { border:1px solid #000; min-height:20px; padding:3px; border-radius:2px; margin-top:1px; white-space:pre-wrap; }
+          .loja .campo-bloco div { min-height:16px; }
+          .termos-print { margin-top:5px; font-size:7px; border:1px solid #666; padding:3px; border-radius:3px; background:#f9f9f9; text-align:justify; }
+          .titulo-termos { display:block; text-align:center; margin-bottom:3px; text-decoration:underline; }
+          .guarde-via { margin-top:8px; border:1.3px solid #000; padding:5px; text-align:center; font-weight:900; font-size:9px; }
+          .assinatura-entrada { margin-top:6px; border:1px solid #000; padding:4px; text-align:center; }
+          .linha-assina { border-top:1px solid #000; margin:13px auto 2px; width:78%; }
+          .assinatura-entrada span, .assinaturas-retirada span { font-size:7.4px; font-weight:bold; }
+          .retirada-box { margin-top:5px; border:1.2px solid #000; padding:4px; }
+          .ret-grid { display:grid; gap:2px; margin-top:3px; }
+          .ret-grid span { display:inline-block; border-bottom:1px solid #000; min-width:75px; height:8px; }
+          .obs-retirada span { display:block; border-bottom:1px solid #000; height:9px; }
+          .assinaturas-retirada { display:flex; gap:8px; margin-top:3px; text-align:center; }
+          .assinaturas-retirada > div { flex:1; }
+          .padrao { display:flex; align-items:center; gap:5px; font-size:8px; }
+          .grid-padrao { display:grid; grid-template-columns:repeat(3, 18px); grid-template-rows:repeat(3, 18px); gap:4px; border:1px solid #000; padding:4px; background:#f3f3f3; }
+          .ponto { width:18px; height:18px; border-radius:50%; border:1px solid #000; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; background:#fff; color:#000; }
+          .ponto.ativo { background:#000; color:#fff; }
           table { table-layout:fixed; }
-          td { vertical-align:top; }
         </style></head>
-        <body><div class="wrapper"><div class="via">${conteudoOS}</div><div class="via">${conteudoOS}</div></div></body></html>`);
+        <body><div class="wrapper"><div class="via">${viaCliente}</div><div class="via">${viaLoja}</div></div></body></html>`);
       win.document.close();
       setTimeout(() => { win.focus(); win.print(); }, 500);
     }
