@@ -1294,8 +1294,25 @@
           .wrapper { width:289mm; height:202mm; display:grid; grid-template-columns:144.5mm 144.5mm; gap:0; align-items:stretch; justify-content:center; }
           .via { width:144.5mm; height:202mm; border:1px dashed #444; padding:3mm; overflow:hidden; page-break-inside:avoid; }
           .via:first-child { border-right:none; }
-          .conteudo-print { font-size:9.2px; line-height:1.08; }
+          .conteudo-print { font-size:9.2px; line-height:1.08; transform-origin:top left; }
           .loja { font-size:8.4px; line-height:1.02; }
+          .via.ajuste-compacto { padding:2.2mm; }
+          .via.ajuste-compacto .topo-via { margin-bottom:2px; padding-bottom:2px; }
+          .via.ajuste-compacto .logo-box { padding:2px 6px; }
+          .via.ajuste-compacto .logo-box img { max-height:27px; }
+          .via.ajuste-compacto h3 { margin:2px 0; }
+          .via.ajuste-compacto .aviso-retirada { padding:2px 3px; margin:2px 0 3px; }
+          .via.ajuste-compacto .dados { margin-bottom:2px; }
+          .via.ajuste-compacto .dados td { padding:1px 0; }
+          .via.ajuste-compacto .campo-bloco { margin-top:2px; }
+          .via.ajuste-compacto .campo-bloco div { min-height:14px; padding:2px; }
+          .via.ajuste-compacto .termos-print { margin-top:3px; padding:2px; font-size:6.5px; line-height:1.02; }
+          .via.ajuste-compacto .guarde-via { margin-top:4px; padding:3px; }
+          .via.ajuste-compacto .assinatura-entrada { margin-top:3px; padding:3px; }
+          .via.ajuste-compacto .linha-assina { margin-top:9px; }
+          .via.ajuste-compacto .retirada-box { margin-top:3px; padding:3px; }
+          .via.ajuste-compacto .ret-grid { gap:1px; margin-top:2px; }
+          .via.ajuste-compacto .assinaturas-retirada { margin-top:2px; }
           .topo-via { position:relative; text-align:center; margin-bottom:4px; border-bottom:2px solid #000; padding-bottom:3px; }
           .logo-box { background:#1D1D1D; padding:4px 8px; border-radius:3px; }
           .logo-box img { display:block; max-height:32px; max-width:100%; width:auto; margin:0 auto; object-fit:contain; }
@@ -1333,7 +1350,35 @@
         </style></head>
         <body><div class="wrapper"><div class="via">${viaCliente}</div><div class="via">${viaLoja}</div></div></body></html>`);
       win.document.close();
-      setTimeout(() => { win.focus(); win.print(); }, 500);
+
+      const ajustarViasParaImpressao = () => {
+        win.document.querySelectorAll('.via').forEach(via => {
+          const conteudo = via.querySelector('.conteudo-print');
+          if (!conteudo) return;
+
+          conteudo.style.zoom = '1';
+          via.classList.remove('ajuste-compacto');
+
+          if (conteudo.scrollHeight > via.clientHeight - 4) {
+            via.classList.add('ajuste-compacto');
+          }
+
+          conteudo.style.zoom = '1';
+          const alturaDisponivel = via.clientHeight - 4;
+          const alturaConteudo = conteudo.scrollHeight;
+
+          if (alturaConteudo > alturaDisponivel) {
+            const escala = Math.max(0.72, Math.min(1, alturaDisponivel / alturaConteudo));
+            conteudo.style.zoom = escala.toFixed(3);
+          }
+        });
+      };
+
+      setTimeout(() => {
+        ajustarViasParaImpressao();
+        win.focus();
+        win.print();
+      }, 500);
     }
 
     function goHome() { window.location.href = 'index.html'; }
