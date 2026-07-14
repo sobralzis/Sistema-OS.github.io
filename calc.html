@@ -289,8 +289,8 @@
     <div class="proporcao-box">
       <strong>PROPORÇÃO:</strong>
       <div class="proporcao-container">
-        <div class="proporcao-option active" data-value="70">
-          <span>70%/30%</span>
+        <div class="proporcao-option active" data-value="60">
+          <span>60%/40%</span>
         </div>
         <div class="proporcao-option" data-value="50">
           <span>50%/50%</span>
@@ -321,6 +321,7 @@
           <strong>RESUMO</strong>
           <span>Técnico: <span id="total-tecnico">R$ 0,00</span></span>
           <span>Assistência: <span id="total-assistencia">R$ 0,00</span></span>
+          <span>Loja: <span id="total-loja">R$ 0,00</span></span>
           <span>Custo: <span id="total-custo">R$ 0,00</span></span>
         </div>
         <div class="recibo" id="resultado"></div>
@@ -330,7 +331,7 @@
 
   <script>
     const servicos = [];
-    let proporcaoTecnico = 70;
+    let proporcaoTecnico = 60;
 
     // CORREÇÃO DO BOTÃO INÍCIO
     document.getElementById('btn-inicio').addEventListener('click', function() {
@@ -392,8 +393,12 @@
     function recalcularServicos() {
       servicos.forEach(servico => {
         const lucro = servico.valor - servico.custo;
-        servico.tecnico = lucro * (proporcaoTecnico / 100);
-        servico.loja = lucro * ((100 - proporcaoTecnico) / 100);
+        const loja = lucro * 0.10;
+        const lucroAssistencia = lucro - loja;
+        servico.tecnico = lucroAssistencia * (proporcaoTecnico / 100);
+        servico.assistencia = lucroAssistencia * ((100 - proporcaoTecnico) / 100);
+        servico.loja = loja;
+        servico.lucroAssistencia = lucroAssistencia;
       });
       atualizarRecibo();
     }
@@ -415,16 +420,20 @@
       }
 
       const lucro = valor - custo;
-      const tecnico = lucro * (proporcaoTecnico / 100);
-      const loja = lucro * ((100 - proporcaoTecnico) / 100);
+      const loja = lucro * 0.10;
+      const lucroAssistencia = lucro - loja;
+      const tecnico = lucroAssistencia * (proporcaoTecnico / 100);
+      const assistencia = lucroAssistencia * ((100 - proporcaoTecnico) / 100);
 
       servicos.push({ 
         identificador, 
         valor, 
         custo, 
-        lucro, 
-        tecnico, 
-        loja 
+        lucro,
+        loja,
+        lucroAssistencia,
+        tecnico,
+        assistencia
       });
       
       atualizarRecibo();
@@ -438,7 +447,7 @@
 
     function atualizarRecibo() {
       let html = '';
-      let totalTecnico = 0, totalLoja = 0, totalCusto = 0;
+      let totalTecnico = 0, totalAssistencia = 0, totalLoja = 0, totalCusto = 0;
 
       servicos.forEach((s) => {
         html += `
@@ -454,22 +463,30 @@
               <strong>Lucro:</strong> <span class="valor">${formatarReal(s.lucro)}</span>
             </div>
             <div class="linha-resumo">
+              <strong>Loja (10%):</strong> <span class="valor">${formatarReal(s.loja)}</span>
+            </div>
+            <div class="linha-resumo">
+              <strong>Lucro Assistência:</strong> <span class="valor">${formatarReal(s.lucroAssistencia)}</span>
+            </div>
+            <div class="linha-resumo">
               <strong>Técnico (${proporcaoTecnico}%):</strong> <span class="valor">${formatarReal(s.tecnico)}</span>
             </div>
             <div class="linha-resumo">
-              <strong>Assistência (${100-proporcaoTecnico}%):</strong> <span class="valor">${formatarReal(s.loja)}</span>
+              <strong>Assistência (${100-proporcaoTecnico}%):</strong> <span class="valor">${formatarReal(s.assistencia)}</span>
             </div>
           </div>
         `;
 
         totalTecnico += s.tecnico;
+        totalAssistencia += s.assistencia;
         totalLoja += s.loja;
         totalCusto += s.custo;
       });
 
       document.getElementById('resultado').innerHTML = html;
       document.getElementById('total-tecnico').textContent = formatarReal(totalTecnico);
-      document.getElementById('total-assistencia').textContent = formatarReal(totalLoja);
+      document.getElementById('total-assistencia').textContent = formatarReal(totalAssistencia);
+      document.getElementById('total-loja').textContent = formatarReal(totalLoja);
       document.getElementById('total-custo').textContent = formatarReal(totalCusto);
     }
 
